@@ -10,9 +10,9 @@
     --accent:#ff385c;
     --accent-dark:#e31c5f;
     --text:#222;
-    --muted:#6a6a6a;
-    --bg:#f7f7f7;
-    --card:#fff;
+    --muted:#868a88;
+    --bg:#f7f7f773;
+    --card:#eff8f6fb;
     --line:#ebebeb;
     --radius:18px;
     --shadow:0 6px 24px rgba(0,0,0,.08);
@@ -130,14 +130,16 @@ body{
 
 .intro{
     margin-bottom:24px;
-    font-size:1.1rem;
+    font-size:1.3rem;
     color:var(--muted);
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 .dashboard{
     display:grid;
     grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
     gap:16px;
+    background:rgba(242, 251, 252, 0.9);
 }
 
 .tile{
@@ -161,13 +163,14 @@ body{
 .tile:hover{
     transform:translateY(-4px);
     box-shadow:0 12px 32px rgba(0,0,0,.12);
+    
 }
 
-.tile-icon{font-size:2.3rem;}
+.tile-icon{font-size:4rem;}
 
 .section-title{
     margin:44px 0 18px;
-    font-size:1.5rem;
+    font-size:2.5rem;
 }
 
 .gallery{
@@ -252,15 +255,17 @@ body{
 
 <header class="topbar">
     <button class="brand" id="brand" type="button">
-        🏠 <span class="brand-name">Crevacuore Apartment</span>
+        🏠 <span class="brand-name">Luxury B&B Apartment In Parella </span>
     </button>
     <div class="langs" id="langs" role="group" aria-label="Language"></div>
 </header>
 
 <section class="hero">
     <div class="hero-inner">
+    <!-- 
         <h1 data-i18n="title">Benvenuti</h1>
-        <p data-i18n="subtitle">Crevacuore Apartment · La vostra casa a Torino</p>
+       <p data-i18n="subtitle">Crevacuore Apartment · La vostra casa a Torino</p> 
+    -->
     </div>
 </section>
 
@@ -273,7 +278,7 @@ body{
 </main>
 
 <footer class="footer">
-    <strong>Crevacuore Apartment</strong>
+    <strong>Luxury B&B Apartment In Parella</strong>
     <span>Via Crevacuore 45, Torino</span>
 </footer>
 
@@ -285,7 +290,7 @@ body{
 /* ========== CONFIGURAZIONE ========== */
 
 const CONFIG = {
-    whatsapp: "CHANGE_ME_WHATSAPP",   // solo cifre, es. 393331234567
+    whatsapp: "393294572379",   // solo cifre, es. 393331234567
     defaultLang: "it",
     storageKey: "guestLanguage",      // stessa chiave per tutte le pagine
     galleryCount: 5                   // images/gallery1.jpg ... gallery5.jpg

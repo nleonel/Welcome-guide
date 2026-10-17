@@ -7,12 +7,12 @@
 /* ---------- 1. CONFIGURAZIONE (modifica solo qui) ---------- */
 
 const CONFIG = {
-    name: "Crevacuore Apartment",
+    name: "Luxury B&B Apartment In Parella",
     address: "Via Crevacuore 45, Torino",
-    whatsapp: "CHANGE_ME_WHATSAPP",   // solo cifre, es. 393331234567
-    wifiSsid: "CHANGE_ME_WIFI",
-    wifiPassword: "CHANGE_ME_PASSWORD",
-    checkinTime: "15:00",
+    whatsapp: "393294572379",   // solo cifre, es. 393331234567
+    wifiSsid: "LUX-HOSTEL-BNB",
+    wifiPassword: "60671393",
+    checkinTime: "16:00",
     checkoutTime: "10:00",
     reviewUrl: "https://g.page/r/CS7gSEFVlZXQEAE/review",
     galleryCount: 5,
@@ -693,6 +693,12 @@ function render() {
     document.documentElement.lang = lang;
     document.title = isHome ? CONFIG.name : title + " | " + CONFIG.name;
 
+    const header = h("header", { class: "topbar" },
+        h("a", { class: "brand", href: "index.html" },
+            h("span", { class: "brand-icon" }, "🏠"),
+            h("span", { class: "brand-name" }, CONFIG.name)),
+        languageBar());
+
     const hero = h("section", { class: "hero" + (isHome ? " hero-home" : "") },
         h("div", { class: "hero-inner" },
             h("span", { class: "hero-icon" }, page.icon),
@@ -700,28 +706,29 @@ function render() {
             h("p", null, isHome ? CONFIG.name + " · " + tr("p.home.1") : tr("p." + page.id + ".1"))));
     hero.style.setProperty("--hero", "url('images/hero-" + page.id + ".jpg')");
 
-    const app = document.getElementById("app");
-    app.replaceChildren(
-        h("header", { class: "topbar" },
-            h("a", { class: "brand", href: "index.html" },
-                h("span", { class: "brand-icon" }, "🏠"),
-                h("span", { class: "brand-name" }, CONFIG.name)),
-            languageBar()),
-        hero,
-        h("main", { class: "container" }, RENDER),
-        !isHome && h("nav", { class: "pager" },
-            prev ? h("a", { href: prev.file }, "← " + tr("p." + prev.id + ".0")) : h("span"),
-            h("a", { class: "pager-home", href: "index.html" }, "🏠 " + tr("ui.home")),
-            next ? h("a", { class: "pager-next", href: next.file }, tr("p." + next.id + ".0") + " →") : h("span")),
-        h("footer", { class: "footer" },
-            h("strong", null, CONFIG.name),
-            h("span", null, CONFIG.address),
-            extLink(whatsappUrl(), "💬 " + tr("ui.wa"), "")),
-        h("a", { class: "wa-float", href: whatsappUrl(), target: "_blank", rel: "noopener", "aria-label": "WhatsApp" }, "💬"),
-        h("div", { class: "toast", id: "toast", role: "status", "aria-live": "polite" })
-    );
-}
+    /* CORREZIONE 1: esegue la funzione della pagina corrente */
+    const content = RENDER[page.id] ? RENDER[page.id]() : [];
+    const main = h("main", { class: "container" }, content);
 
+    /* CORREZIONE 2: nessun pager nella Home (niente "false") */
+    const pager = isHome ? null : h("nav", { class: "pager" },
+        prev ? h("a", { href: prev.file }, "← " + tr("p." + prev.id + ".0")) : h("span"),
+        h("a", { class: "pager-home", href: "index.html" }, "🏠 " + tr("ui.home")),
+        next ? h("a", { class: "pager-next", href: next.file }, tr("p." + next.id + ".0") + " →") : h("span"));
+
+    const footer = h("footer", { class: "footer" },
+        h("strong", null, CONFIG.name),
+        h("span", null, CONFIG.address),
+        extLink(whatsappUrl(), "💬 " + tr("ui.wa"), ""));
+
+    const waFloat = h("a", { class: "wa-float", href: whatsappUrl(), target: "_blank",
+        rel: "noopener", "aria-label": "WhatsApp" }, "💬");
+
+    const toast = h("div", { class: "toast", id: "toast", role: "status", "aria-live": "polite" });
+
+    document.getElementById("app").replaceChildren(
+        ...[header, hero, main, pager, footer, waFloat, toast].filter(Boolean));
+}
 /* ---------- 7. FUNZIONI INTERATTIVE ---------- */
 
 let toastTimer;
