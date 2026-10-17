@@ -1,715 +1,550 @@
 <!DOCTYPE html>
 <html lang="it">
-
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crevacuore Apartment</title>
 
-    <meta charset="UTF-8">
+<style>
+:root{
+    --accent:#ff385c;
+    --accent-dark:#e31c5f;
+    --text:#222;
+    --muted:#6a6a6a;
+    --bg:#f7f7f7;
+    --card:#fff;
+    --line:#ebebeb;
+    --radius:18px;
+    --shadow:0 6px 24px rgba(0,0,0,.08);
+}
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+*{box-sizing:border-box;margin:0;padding:0;}
 
-    <meta name="description"
-          content="Crevacuore Apartment - Welcome Guide">
+body{
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--text);
+    background:var(--bg);
+    line-height:1.6;
+}
 
-    <title>Crevacuore Apartment</title>
+/* ---------- Header fisso con lingue ---------- */
 
-    <link rel="stylesheet" href="style.css">
+.topbar{
+    position:sticky;
+    top:0;
+    z-index:100;
+    height:64px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:0 20px;
+    background:rgba(255,255,255,.94);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--line);
+}
 
+.brand{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    border:0;
+    background:none;
+    font:inherit;
+    font-weight:700;
+    font-size:1.05rem;
+    color:var(--accent);
+    cursor:pointer;
+    white-space:nowrap;
+}
+
+.langs{
+    display:flex;
+    gap:8px;
+    overflow-x:auto;
+    scrollbar-width:none;
+}
+
+.langs::-webkit-scrollbar{display:none;}
+
+.lang{
+    flex:0 0 auto;
+    width:40px;
+    height:40px;
+    border:3px solid #fff;
+    border-radius:50%;
+    background-color:#fff;
+    background-size:cover;
+    background-position:center;
+    box-shadow:0 1px 5px rgba(0,0,0,.2);
+    font-size:1.3rem;
+    line-height:1;
+    cursor:pointer;
+    transition:transform .2s,border-color .2s;
+}
+
+.lang:hover{transform:scale(1.1);}
+.lang.active{border-color:var(--accent);}
+
+/* ---------- Hero ---------- */
+
+.hero{
+    min-height:55vh;
+    display:flex;
+    align-items:flex-end;
+    padding:40px 20px;
+    color:#fff;
+    background-color:#3a4a5c;
+    background-image:
+        linear-gradient(to top,rgba(0,0,0,.65),rgba(0,0,0,.1)),
+        url("images/hero-home.png");
+    background-size:cover;
+    background-position:center;
+}
+
+.hero-inner{
+    width:100%;
+    max-width:1100px;
+    margin:0 auto;
+}
+
+.hero h1{
+    font-size:clamp(2.2rem,7vw,4rem);
+    line-height:1.1;
+}
+
+.hero p{
+    margin-top:8px;
+    font-size:clamp(1rem,2.5vw,1.3rem);
+    opacity:.92;
+}
+
+/* ---------- Contenuto ---------- */
+
+.container{
+    max-width:1100px;
+    margin:0 auto;
+    padding:36px 20px 48px;
+}
+
+.intro{
+    margin-bottom:24px;
+    font-size:1.1rem;
+    color:var(--muted);
+}
+
+.dashboard{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+    gap:16px;
+}
+
+.tile{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    min-height:130px;
+    padding:20px 12px;
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    color:var(--text);
+    font-weight:600;
+    text-align:center;
+    text-decoration:none;
+    transition:transform .2s,box-shadow .2s;
+}
+
+.tile:hover{
+    transform:translateY(-4px);
+    box-shadow:0 12px 32px rgba(0,0,0,.12);
+}
+
+.tile-icon{font-size:2.3rem;}
+
+.section-title{
+    margin:44px 0 18px;
+    font-size:1.5rem;
+}
+
+.gallery{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+    gap:14px;
+}
+
+.gallery img{
+    width:100%;
+    aspect-ratio:4/3;
+    object-fit:cover;
+    border-radius:14px;
+    cursor:zoom-in;
+}
+
+.lightbox{
+    position:fixed;
+    inset:0;
+    z-index:300;
+    display:grid;
+    place-items:center;
+    padding:20px;
+    background:rgba(0,0,0,.9);
+    cursor:zoom-out;
+}
+
+.lightbox img{
+    max-width:100%;
+    max-height:90vh;
+    border-radius:12px;
+}
+
+/* ---------- Footer e WhatsApp ---------- */
+
+.footer{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+    padding:32px 20px 96px;
+    background:#222;
+    color:#ddd;
+    text-align:center;
+}
+
+.wa-float{
+    position:fixed;
+    right:20px;
+    bottom:20px;
+    z-index:200;
+    width:58px;
+    height:58px;
+    border:0;
+    border-radius:50%;
+    background:#25d366;
+    color:#fff;
+    font-size:1.7rem;
+    box-shadow:0 8px 24px rgba(0,0,0,.25);
+    cursor:pointer;
+}
+
+/* ---------- Mobile ---------- */
+
+@media (max-width:760px){
+    .topbar{padding:0 12px;}
+    .brand-name{display:none;}
+    .lang{width:36px;height:36px;}
+    .hero{min-height:42vh;padding:28px 18px;}
+    .dashboard{grid-template-columns:repeat(3,1fr);gap:10px;}
+    .tile{min-height:104px;padding:14px 6px;font-size:.85rem;}
+    .tile-icon{font-size:1.9rem;}
+}
+
+@media (max-width:380px){
+    .dashboard{grid-template-columns:repeat(2,1fr);}
+}
+</style>
 </head>
 
 <body>
 
-<!-- ===================================== -->
-<!-- FLOATING WHATSAPP -->
-<!-- ===================================== -->
-
-<a href="https://wa.me/CHANGE_ME_WHATSAPP"
-   class="whatsapp-button"
-   target="_blank">
-
-    💬
-
-</a>
-
-
-<!-- ===================================== -->
-<!-- HERO -->
-<!-- ====================================
-
-        <div class="hero-content">
-
-            <h1 id="site-title">
-                Crevacuore Apartment
-            </h1>
-
-            <p id="welcome-message">
-                Welcome to Turin
-            </p>
-
-            <!-- Language Selector -->
-
-            <div class="language-selector">
-
-                <button class="lang-btn"
-                        data-lang="it">
-             
-                    <img src="https://flagcdn.com/w160/it.png">
-
-                    <span>Italiano</span>
-
-                </button>
-
-                <button class="lang-btn"
-                        data-lang="en">
-
-                    <img src="https://flagcdn.com/w160/gb.png">
-
-                    <span>English</span>
-
-                </button>
-
-                <button class="lang-btn"
-                        data-lang="fr">
-
-                    <img src="https://flagcdn.com/w160/fr.png">
-
-                    <span>Français</span>
-
-                </button>
-
-                <button class="lang-btn"
-                        data-lang="de">
-
-                    <img src="https://flagcdn.com/w160/de.png">
-
-                    <span>Deutsch</span>
-
-                </button>
-
-                <button class="lang-btn"
-                        data-lang="es">
-
-                    <img src="https://flagcdn.com/w160/es.png">
-
-                    <span>Español</span>
-
-                </button>
-
-                <button class="lang-btn"
-                        data-lang="zh">
-
-                    <img src="https://flagcdn.com/w160/cn.png">
-
-                    <span>中文</span>
-
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
+<header class="topbar">
+    <button class="brand" id="brand" type="button">
+        🏠 <span class="brand-name">Crevacuore Apartment</span>
+    </button>
+    <div class="langs" id="langs" role="group" aria-label="Language"></div>
 </header>
 
-
-<!-- ===================================== -->
-<!-- DASHBOARD -->
-<!-- ===================================== -->
-
-<section id="dashboard">
-
-    <h2>Guest Guide</h2>
-
-    <div class="dashboard-grid">
-
-        #wifi
-            <span>📶</span>
-            <h3>WiFi</h3>
-        </a>
-
-        #checkin
-            <span>🔑</span>
-            <h3>Check‑In</h3>
-        </a>
-
-        #checkout
-            <span>🚪</span>
-            <h3>Check‑Out</h3>
-        </a>
-
-        #rules
-            <span>📋</span>
-            <h3>Rules</h3>
-        </a>
-
-        #directions
-            <span>📍</span>
-            <h3>Directions</h3>
-        </a>
-
-        #parking
-            <span>🚗</span>
-            <h3>Parking</h3>
-        </a>
-
-        #attractions
-            <span>🗺️</span>
-            <h3>Attractions</h3>
-        </a>
-
-        #restaurants
-            <span>🍕</span>
-            <h3>Food</h3>
-        </a>
-
-        #supermarkets
-            <span>🛒</span>
-            <h3>Shops</h3>
-        </a>
-
-        #emergency
-            <span>🚑</span>
-            <h3>Emergency</h3>
-        </a>
-
-        #review
-            <span>⭐</span>
-            <h3>Review</h3>
-        </a>
-
-        <a href="https://wa.me/CHANGE_ME_WHATSAPP"
-           class="dashboard-card"
-           target       </a>
-
+<section class="hero">
+    <div class="hero-inner">
+        <h1 data-i18n="title">Benvenuti</h1>
+        <p data-i18n="subtitle">Crevacuore Apartment · La vostra casa a Torino</p>
     </div>
-
 </section>
 
-
-<!-- ===================================== -->
-<!-- GALLERY -->
-<!-- ===================================== -->
-
-<section id="gallery">
-
-    <h2>Photo Gallery</h2>
-
-    <div class="gallery-grid">
-
-        images/gallery1.jpg
-        images/gallery2.jpg
-        images/gallery3.jpg
-        images/gallery4.jpg
-        <mages/gallery5.jpg
-
-    </div>
-
-    <a href="#dashboard"
-       class   </a>
-
-</section>
-
-
-<!-- ===================================== -->
-<!-- WIFI -->
-<!-- ===================================== -->
-
-<section id="wifi"
-         class="content-section">
-
-    <h2>📶 WiFi</h2>
-
-    <div class="card">
-
-        <h3>Network Name</h3>
-
-        <p id="wifi-name">
-            CHANGE_ME_WIFI
-        </p>
-
-        <h3>Password</h3>
-
-        <p id="wifi-password">
-            CHANGE_ME_PASSWORD
-        </p>
-
-        <button id="copy-password">
-
-            Copy Password
-
-        </button>
-
-        <div class="wifi-qr">
-
-            images/wifi-qr.png
-
-        </div>
-
-    </div>
-
-    <a href="#
-
-       ⬆ Dashboard
-
-    </a>
-
-</section>
-
-
-<!-- ===================================== -->
-<!-- CHECK IN -->
-<!-- ===================================== -->
-
-<section id="checkin"
-         class="content-section">
-
-    <h2>🔑 Check‑In</h2>
-
-    <div class="card">
-
-        <h3>Check-In Time</h3>
-
-        <p>
-
-            CHANGE_ME_CHECKIN_TIME
-
-        </p>
-
-        images/keybox.jpg
-
-        <ol>
-
-            <li>Reach the apartment.</li>
-
-            <li>Locate the key box.</li>
-
-            <li>Insert the provided code.</li>
-
-            <li>Open the key box.</li>
-
-            <li>Take the keys.</li>
-
-        </ol>
-
-    </div>
-
-    <a hrefard
-
-       ⬆ Dashboard
-
-    </a>
-
-</section>
-
-
-<!-- ===================================== -->
-<!-- CHECK OUT -->
-<!-- ===================================== -->
-
-<section id="checkout"
-         class="content-section">
-
-    <h2>🚪 Check‑Out</h2>
-
-    <div class="card">
-
-        <h3>Check-Out Time</h3>
-
-        <p>
-
-            CHANGE_ME_CHECKOUT_TIME
-
-        </p>
-
-        <ul>
-
-            <li>Close all windows.</li>
-
-            <li>Turn off lights.</li>
-
-            <li>Turn off air conditioning.</li>
-
-            <li>Wash used dishes.</li>
-
-            <li>Leave keys in key box.</li>
-
-        </ul>
-
-    </div>
-
-    #dashboard
-
-       ⬆ Dashboard
-
-    </a>
-
-</section>
-
-<!-- ===================================== -->
-<!-- HOUSE RULES -->
-<!-- ===================================== -->
-
-<section id="rules"
-         class="content-section">
-
-    <h2>📋 House Rules</h2>
-
-    <div class="card">
-
-        <ul>
-
-            <li>🚭 No smoking inside the apartment</li>
-
-            <li>🎉 No parties or events</li>
-
-            <li>🔇 Respect quiet hours after 22:00</li>
-
-            <li>⚡ Turn off lights when leaving</li>
-
-            <li>❄ Turn off air conditioning when absent</li>
-
-            <li>♻ Separate waste correctly</li>
-
-        </ul>
-
-    </div>
-
-    #dashboard
-        ⬆ Dashboard
-    </a>
-
-</section>
-
-
-<!-- ===================================== -->
-<!-- HOW TO REACH US -->
-<!-- ===================================== -->
-
-<section id="directions"
-         class="content-section">
-
-    <h2>📍 How To Reach The Apartment</h2>
-
-    <div class="directions-grid">
-
-        <div class="card">
-
-            <h3>✈ Turin Airport</h3>
-
-            <p>
-                Take the train or shuttle bus to the city
-                center, then continue by Metro.
-            </p>
-
-        </div>
-
-        <div class="card">
-
-            <h3>🚆 Porta Nuova</h3>
-
-            <p>
-                Metro + short walk to the apartment.
-            </p>
-
-        </div>
-
-        <div class="card">
-
-            <h3>🚆 Porta Susa</h3>
-
-            <p>
-                Take Metro Line M1 towards Bengasi.
-            </p>
-
-        </div>
-
-        <div class="card">
-
-            <h3>🚇 Metro</h3>
-
-            <p>
-                Nearest station available nearby.
-            </p>
-
-        </div>
-
-    </div>
-
-    <p class="maps-link">
-
-        <a target="_blank"
-           href="https://mapsino
-
-            Open in Google Maps
-
-        </a>
-
-    </p>
-
-    #dashboard
-        ⬆ Dashboard
-    </a>
-
-</section>
-
-
-<!-- ===================================== -->
-<!-- PARKING -->
-<!-- ===================================== -->
-
-<section id="parking"
-         class="content-section">
-
-    <h2>🚗 Parking</h2>
-
-    <div class="card">
-
-        <h3>Free Street Parking</h3>
-
-        <p>
-
-            Free parking is available along nearby streets.
-
-        </p>
-
-        <h3>Private Parking</h3>
-
-        <p>
-
-            Information coming soon.
-
-        </p>
-
-    </div>
-
-    #dashboard
-        ⬆ Dashboard
-    </a>
-
-</section>
-
-
-<!-- ===================================== -->
-<!-- ATTRACTIONS -->
-<!-- ===================================== -->
-
-<section id="attractions"
-         class="content-section">
-
-    <h2>🗺️ Turin Attractions</h2>
-
-    <div class="cards-grid">
-
-        <div class="card">
-            <h3>Mole Antonelliana</h3>
-            <p>The symbol of Turin.</p>
-        </div>
-
-        <div class="card">
-            <h3>Egyptian Museum</h3>
-            <p>One of the most important in the world.</p>
-        </div>
-
-        <div class="card">
-            <h3>Royal Palace</h3>
-            <p>Historic residence of the Savoy family.</p>
-        </div>
-
-        <div class="card">
-            <h3>Valentino Park</h3>
-            <p>Relax by the river.</p>
-        </div>
-
-        <div class="card">
-            <h3>Venaria Reale</h3>
-            <p>UNESCO royal residence.</p>
-        </div>
-
-        <div class="card">
-            <h3>Allianz Stadium</h3>
-            <p>Home of Juventus FC.</p>
-        </div>
-
-    </div>
-
-    #dashboard
-        ⬆ Dashboard
-    </a>
-
-</section>
-
-
-<!-- ===================================== -->
-<!-- RESTAURANTS -->
-<!-- ===================================== -->
-
-<section id="restaurants"
-         class="content-section">
-
-    <h2>🍕 Food & Restaurants</h2>
-
-    <div class="cards-grid">
-
-        <div class="card">
-            <h3>☕ Breakfast</h3>
-            <p>Recommended local cafés nearby.</p>
-        </div>
-
-        <div class="card">
-            <h3>🍕 Pizza</h3>
-            <p>Best pizza places near the apartment.</p>
-        </div>
-
-        <div class="card">
-            <h3>🍝 Restaurant</h3>
-            <p>Traditional Piedmont cuisine.</p>
-        </div>
-
-        <div class="card">
-            <h3>🍹 Aperitivo</h3>
-            <p>Enjoy Turin's aperitivo culture.</p>
-        </div>
-
-    </div>
-
-    #dashboard
-        ⬆ Dashboard
-    </a>
-
-</section>
-
-
-<!-- ===================================== -->
-<!-- SUPERMARKETS -->
-<!-- ===================================== -->
-
-<section id="supermarkets"
-         class="content-section">
-
-    <h2>🛒 Supermarkets</h2>
-
-    <div class="cards-grid">
-
-        <div class="card">
-            <h3>Carrefour</h3>
-        </div>
-
-        <div class="card">
-            <h3>Conad</h3>
-        </div>
-
-        <div class="card">
-            <h3>Lidl</h3>
-        </div>
-
-        <div class="card">
-            <h3>Esselunga</h3>
-        </div>
-
-    </div>
-
-    #dashboard
-        ⬆ Dashboard
-    </a>
-
-</section>
-
-
-<!-- ===================================== -->
-<!-- EMERGENCY -->
-<!-- ===================================== -->
-
-<section id="emergency"
-         class="content-section">
-
-    <h2>🚑 Emergency Numbers</h2>
-
-    <div class="card">
-
-        <ul>
-
-            <li>112 - Emergency</li>
-
-            <li>118 - Medical Emergency</li>
-
-            <li>115 - Fire Brigade</li>
-
-            <li>113 - Police</li>
-
-        </ul>
-
-    </div>
-
-    #dashboard
-        ⬆ Dashboard
-    </a>
-
-</section>
-
-
-<!-- ===================================== -->
-<!-- GOOGLE REVIEW -->
-<!-- ===================================== -->
-
-<section id="review"
-         class="content-section">
-
-    <h2>⭐ Loved your stay?</h2>
-
-    <div class="card">
-
-        <p>
-
-            Your review helps future guests.
-
-        </p>
-
-        <a class="review-button"
-           target="_blank"
-           href="https://g.page/r/CS7gSEFVlZXQEAE/review">
-
-            Leave a Google Review
-
-        </a>
-
-    </div>
-
-    #dashboard
-        ⬆ Dashboard
-    </a>
-
-</section>
-
-
-<!-- ===================================== -->
-<!-- FOOTER -->
-<!-- ===================================== -->
-
-<footer>
-
-    <div class="footer-content">
-
-        <h3>Crevacuore Apartment</h3>
-
-        <p>
-            Via Crevacuore 45, Torino
-        </p>
-
-        <p>
-            Copyright © 2026
-        </p>
-
-    </div>
-
+<main class="container">
+    <p class="intro" data-i18n="intro"></p>
+    <nav class="dashboard" id="dashboard"></nav>
+
+    <h2 class="section-title" id="gallery-title" data-i18n="gallery"></h2>
+    <div class="gallery" id="gallery"></div>
+</main>
+
+<footer class="footer">
+    <strong>Crevacuore Apartment</strong>
+    <span>Via Crevacuore 45, Torino</span>
 </footer>
 
+<button class="wa-float" id="wa" type="button" aria-label="WhatsApp">💬</button>
 
-<!-- ===================================== -->
-<!-- JAVASCRIPT -->
-<!-- ===================================== -->
+<script>
+"use strict";
 
-<script src="script.js"></script>
+/* ========== CONFIGURAZIONE ========== */
+
+const CONFIG = {
+    whatsapp: "CHANGE_ME_WHATSAPP",   // solo cifre, es. 393331234567
+    defaultLang: "it",
+    storageKey: "guestLanguage",      // stessa chiave per tutte le pagine
+    galleryCount: 5                   // images/gallery1.jpg ... gallery5.jpg
+};
+
+const LANGUAGES = [
+    { code: "it", flag: "it", emoji: "🇮🇹", label: "Italiano" },
+    { code: "en", flag: "gb", emoji: "🇬🇧", label: "English" },
+    { code: "fr", flag: "fr", emoji: "🇫🇷", label: "Français" },
+    { code: "de", flag: "de", emoji: "🇩🇪", label: "Deutsch" },
+    { code: "es", flag: "es", emoji: "🇪🇸", label: "Español" },
+    { code: "zh", flag: "cn", emoji: "🇨🇳", label: "中文" }
+];
+
+const PAGES = [
+    { id: "wifi",         file: "wifi.html",          icon: "📶" },
+    { id: "checkin",      file: "check-in.html",      icon: "🔑" },
+    { id: "checkout",     file: "check-out.html",     icon: "🚪" },
+    { id: "rules",        file: "regole.html",        icon: "📋" },
+    { id: "directions",   file: "come-arrivare.html", icon: "📍" },
+    { id: "parking",      file: "parcheggi.html",     icon: "🚗" },
+    { id: "attractions",  file: "attrazioni.html",    icon: "🗺️" },
+    { id: "restaurants",  file: "ristoranti.html",    icon: "🍕" },
+    { id: "supermarkets", file: "supermercati.html",  icon: "🛒" },
+    { id: "emergency",    file: "emergenze.html",     icon: "🚑" },
+    { id: "review",       file: "review.html",        icon: "⭐" }
+];
+
+/* ========== TRADUZIONI ========== */
+
+const TEXT = {
+    it: {
+        title: "Benvenuti",
+        subtitle: "Crevacuore Apartment · La vostra casa a Torino",
+        intro: "Scegliete un argomento: troverete tutte le informazioni utili per il vostro soggiorno.",
+        gallery: "Galleria",
+        pages: {
+            wifi: "Wi-Fi", checkin: "Check-in", checkout: "Check-out",
+            rules: "Regole della casa", directions: "Come arrivare",
+            parking: "Parcheggi", attractions: "Attrazioni",
+            restaurants: "Ristoranti", supermarkets: "Supermercati",
+            emergency: "Emergenze", review: "Recensione"
+        }
+    },
+    en: {
+        title: "Welcome",
+        subtitle: "Crevacuore Apartment · Your home in Turin",
+        intro: "Choose a topic to find everything you need for your stay.",
+        gallery: "Gallery",
+        pages: {
+            wifi: "Wi-Fi", checkin: "Check-in", checkout: "Check-out",
+            rules: "House rules", directions: "Getting here",
+            parking: "Parking", attractions: "Attractions",
+            restaurants: "Restaurants", supermarkets: "Supermarkets",
+            emergency: "Emergencies", review: "Review"
+        }
+    },
+    fr: {
+        title: "Bienvenue",
+        subtitle: "Crevacuore Apartment · Votre maison à Turin",
+        intro: "Choisissez un thème pour trouver toutes les informations utiles à votre séjour.",
+        gallery: "Galerie",
+        pages: {
+            wifi: "Wi-Fi", checkin: "Arrivée", checkout: "Départ",
+            rules: "Règles de la maison", directions: "Comment venir",
+            parking: "Stationnement", attractions: "Attractions",
+            restaurants: "Restaurants", supermarkets: "Supermarchés",
+            emergency: "Urgences", review: "Avis"
+        }
+    },
+    de: {
+        title: "Willkommen",
+        subtitle: "Crevacuore Apartment · Ihr Zuhause in Turin",
+        intro: "Wählen Sie ein Thema – hier finden Sie alle Informationen für Ihren Aufenthalt.",
+        gallery: "Galerie",
+        pages: {
+            wifi: "WLAN", checkin: "Check-in", checkout: "Check-out",
+            rules: "Hausregeln", directions: "Anreise",
+            parking: "Parken", attractions: "Sehenswürdigkeiten",
+            restaurants: "Restaurants", supermarkets: "Supermärkte",
+            emergency: "Notfälle", review: "Bewertung"
+        }
+    },
+    es: {
+        title: "Bienvenidos",
+        subtitle: "Crevacuore Apartment · Su casa en Turín",
+        intro: "Elija un tema para encontrar toda la información útil para su estancia.",
+        gallery: "Galería",
+        pages: {
+            wifi: "Wi-Fi", checkin: "Check-in", checkout: "Check-out",
+            rules: "Normas de la casa", directions: "Cómo llegar",
+            parking: "Aparcamiento", attractions: "Atracciones",
+            restaurants: "Restaurantes", supermarkets: "Supermercados",
+            emergency: "Emergencias", review: "Reseña"
+        }
+    },
+    zh: {
+        title: "欢迎",
+        subtitle: "Crevacuore Apartment · 您在都灵的家",
+        intro: "请选择一个主题，查看住宿期间所需的全部信息。",
+        gallery: "相册",
+        pages: {
+            wifi: "无线网络", checkin: "入住", checkout: "退房",
+            rules: "房屋守则", directions: "交通指南",
+            parking: "停车", attractions: "景点",
+            restaurants: "餐厅", supermarkets: "超市",
+            emergency: "紧急情况", review: "评价"
+        }
+    }
+};
+
+/* ========== MEMORIA LINGUA ========== */
+
+function loadLang() {
+    let saved = null;
+    try { saved = localStorage.getItem(CONFIG.storageKey); } catch (e) {}
+    if (TEXT[saved]) return saved;
+
+    const browser = (navigator.language || "").slice(0, 2).toLowerCase();
+    return TEXT[browser] ? browser : CONFIG.defaultLang;
+}
+
+function saveLang(code) {
+    try { localStorage.setItem(CONFIG.storageKey, code); } catch (e) {}
+}
+
+/* ========== SELETTORE LINGUA (bandiere) ========== */
+
+function buildLanguageSelector() {
+    const container = document.getElementById("langs");
+
+    LANGUAGES.forEach(function (l) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "lang";
+        button.dataset.lang = l.code;
+        button.title = l.label;
+        button.setAttribute("aria-label", l.label);
+
+        // Emoji di riserva, sostituita dall'immagine se esiste
+        button.textContent = l.emoji;
+
+        const path = "images/flags/" + l.flag + ".svg";
+        const probe = new Image();
+        probe.onload = function () {
+            button.style.backgroundImage = 'url("' + path + '")';
+            button.textContent = "";
+        };
+        probe.src = path;
+
+        button.addEventListener("click", function () {
+            applyLanguage(l.code);
+        });
+
+        container.appendChild(button);
+    });
+}
+
+/* ========== DASHBOARD ========== */
+
+function buildDashboard() {
+    const nav = document.getElementById("dashboard");
+
+    PAGES.forEach(function (p) {
+        const tile = document.createElement("a");
+        tile.className = "tile";
+        tile.href = p.file;
+
+        const icon = document.createElement("span");
+        icon.className = "tile-icon";
+        icon.textContent = p.icon;
+
+        const label = document.createElement("span");
+        label.dataset.page = p.id;
+
+        tile.appendChild(icon);
+        tile.appendChild(label);
+        nav.appendChild(tile);
+    });
+}
+
+/* ========== GALLERIA ========== */
+
+function buildGallery() {
+    const gallery = document.getElementById("gallery");
+    const title = document.getElementById("gallery-title");
+    let loaded = 0;
+    let failed = 0;
+
+    function checkEmpty() {
+        if (loaded + failed === CONFIG.galleryCount && loaded === 0) {
+            title.style.display = "none";
+        }
+    }
+
+    for (let n = 1; n <= CONFIG.galleryCount; n++) {
+        const img = document.createElement("img");
+        img.src = "images/gallery" + n + ".jpg";
+        img.alt = "Crevacuore Apartment " + n;
+        img.loading = "lazy";
+
+        img.onload = function () { loaded++; checkEmpty(); };
+        img.onerror = function () { img.remove(); failed++; checkEmpty(); };
+
+        img.addEventListener("click", function () {
+            const box = document.createElement("div");
+            box.className = "lightbox";
+            const big = document.createElement("img");
+            big.src = img.src;
+            big.alt = img.alt;
+            box.appendChild(big);
+            box.addEventListener("click", function () { box.remove(); });
+            document.body.appendChild(box);
+        });
+
+        gallery.appendChild(img);
+    }
+}
+
+/* ========== APPLICA LINGUA ========== */
+
+function applyLanguage(code) {
+    const dict = TEXT[code] || TEXT[CONFIG.defaultLang];
+    saveLang(code);
+
+    document.documentElement.lang = code;
+    document.title = "Crevacuore Apartment · " + dict.title;
+
+    document.querySelectorAll("[data-i18n]").forEach(function (el) {
+        const key = el.dataset.i18n;
+        if (dict[key] !== undefined) el.textContent = dict[key];
+    });
+
+    document.querySelectorAll("[data-page]").forEach(function (el) {
+        el.textContent = dict.pages[el.dataset.page] || el.dataset.page;
+    });
+
+    document.querySelectorAll(".lang").forEach(function (b) {
+        const active = b.dataset.lang === code;
+        b.classList.toggle("active", active);
+        b.setAttribute("aria-pressed", String(active));
+    });
+}
+
+/* ========== AVVIO ========== */
+
+document.getElementById("brand").addEventListener("click", function () {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+document.getElementById("wa").addEventListener("click", function () {
+    window.open("https://wa.me/" + CONFIG.whatsapp, "_blank", "noopener");
+});
+
+buildLanguageSelector();
+buildDashboard();
+buildGallery();
+applyLanguage(loadLang());
+</script>
 
 </body>
 </html>
