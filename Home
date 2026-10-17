@@ -1,0 +1,2377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Digital welcome guide for our apartment in Turin."
+    >
+
+    <title>Welcome to Our Apartment</title>
+
+    <style>
+        /* =========================================================
+           1. GLOBAL SETTINGS
+        ========================================================= */
+
+        :root {
+            --primary: #16324f;
+            --primary-light: #24557d;
+            --accent: #d99f59;
+            --accent-light: #f2c98e;
+            --background: #f6f3ee;
+            --surface: #ffffff;
+            --surface-soft: #faf8f4;
+            --text: #26313a;
+            --text-light: #66717a;
+            --success: #2f7d61;
+            --danger: #c65353;
+            --border: rgba(22, 50, 79, 0.12);
+            --shadow: 0 16px 40px rgba(31, 42, 55, 0.10);
+            --shadow-small: 0 8px 22px rgba(31, 42, 55, 0.08);
+            --radius: 22px;
+            --radius-small: 14px;
+            --container: 1180px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 110px;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Helvetica,
+                Arial,
+                sans-serif;
+            color: var(--text);
+            background: var(--background);
+            line-height: 1.6;
+        }
+
+        body.menu-open {
+            overflow: hidden;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button,
+        input {
+            font: inherit;
+        }
+
+        button {
+            border: 0;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        section {
+            padding: 88px 24px;
+        }
+
+        .container {
+            width: min(100%, var(--container));
+            margin-inline: auto;
+        }
+
+        .section-heading {
+            max-width: 700px;
+            margin-bottom: 38px;
+        }
+
+        .section-label {
+            display: inline-block;
+            margin-bottom: 10px;
+            color: var(--accent);
+            font-size: 0.82rem;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        .section-heading h2 {
+            color: var(--primary);
+            font-size: clamp(2rem, 5vw, 3.3rem);
+            line-height: 1.1;
+            letter-spacing: -0.04em;
+        }
+
+        .section-heading p {
+            max-width: 650px;
+            margin-top: 15px;
+            color: var(--text-light);
+            font-size: 1.05rem;
+        }
+
+        /* =========================================================
+           2. NAVIGATION
+        ========================================================= */
+
+        .navbar {
+            position: fixed;
+            z-index: 1000;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.92);
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 5px 20px rgba(30, 45, 60, 0.05);
+            backdrop-filter: blur(18px);
+        }
+
+        .nav-inner {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 76px;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--primary);
+            font-weight: 800;
+        }
+
+        .brand-icon {
+            display: grid;
+            width: 43px;
+            height: 43px;
+            place-items: center;
+            color: white;
+            background: var(--primary);
+            border-radius: 50%;
+            font-size: 1.25rem;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+
+        .nav-links a {
+            position: relative;
+            color: var(--text-light);
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        .nav-links a::after {
+            position: absolute;
+            right: 0;
+            bottom: -7px;
+            left: 0;
+            height: 2px;
+            content: "";
+            background: var(--accent);
+            transform: scaleX(0);
+            transition: transform 0.25s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a:hover::after {
+            transform: scaleX(1);
+        }
+
+        .menu-button {
+            display: none;
+            width: 44px;
+            height: 44px;
+            color: var(--primary);
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.35rem;
+        }
+
+        /* =========================================================
+           3. LANGUAGE SELECTOR
+        ========================================================= */
+
+        .language-bar {
+            position: relative;
+            z-index: 10;
+            padding: 12px 20px;
+            background: var(--primary);
+        }
+
+        .language-list {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            flex-wrap: wrap;
+        }
+
+        .language-button {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            min-height: 38px;
+            padding: 5px 11px;
+            color: rgba(255, 255, 255, 0.82);
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 999px;
+            cursor: pointer;
+            transition:
+                transform 0.2s ease,
+                background 0.2s ease,
+                color 0.2s ease;
+        }
+
+        .language-button:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.16);
+            transform: translateY(-2px);
+        }
+
+        .language-button.active {
+            color: var(--primary);
+            background: white;
+        }
+
+        .flag {
+            font-size: 1.35rem;
+            line-height: 1;
+        }
+
+        .language-name {
+            font-size: 0.78rem;
+            font-weight: 800;
+        }
+
+        /* =========================================================
+           4. HERO
+        ========================================================= */
+
+        .hero {
+            position: relative;
+            display: grid;
+            min-height: 100vh;
+            padding: 155px 24px 70px;
+            place-items: center;
+            overflow: hidden;
+            color: white;
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(10, 29, 46, 0.92) 0%,
+                    rgba(10, 29, 46, 0.76) 43%,
+                    rgba(10, 29, 46, 0.30) 100%
+                ),
+                 url("https://drive.google.com/thumbnail?id=1JMEyr-s7wVvKA9i7febR1yLvqgs-dAmL&sz=w1600");
+                center / cover no-repeat;
+        }
+
+        .hero::after {
+            position: absolute;
+            inset: auto 0 0;
+            height: 150px;
+            content: "";
+            background: linear-gradient(transparent, var(--background));
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            width: min(100%, var(--container));
+        }
+
+        .hero-text {
+            max-width: 760px;
+        }
+
+        .hero-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            margin-bottom: 22px;
+            padding: 8px 14px;
+            color: var(--accent-light);
+            background: rgba(255, 255, 255, 0.10);
+            border: 1px solid rgba(255, 255, 255, 0.20);
+            border-radius: 999px;
+            backdrop-filter: blur(10px);
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .hero h1 {
+            max-width: 820px;
+            font-size: clamp(3rem, 8vw, 6.6rem);
+            line-height: 0.96;
+            letter-spacing: -0.055em;
+        }
+
+        .hero-description {
+            max-width: 670px;
+            margin-top: 25px;
+            color: rgba(255, 255, 255, 0.88);
+            font-size: clamp(1.05rem, 2vw, 1.28rem);
+        }
+
+        .hero-actions {
+            display: flex;
+            margin-top: 34px;
+            gap: 13px;
+            flex-wrap: wrap;
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 51px;
+            padding: 12px 22px;
+            border-radius: 999px;
+            cursor: pointer;
+            font-weight: 800;
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease,
+                background 0.2s ease;
+        }
+
+        .button:hover {
+            transform: translateY(-3px);
+        }
+
+        .button-primary {
+            color: var(--primary);
+            background: var(--accent-light);
+            box-shadow: 0 10px 30px rgba(217, 159, 89, 0.25);
+        }
+
+        .button-secondary {
+            color: white;
+            background: rgba(255, 255, 255, 0.09);
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            backdrop-filter: blur(8px);
+        }
+
+        .quick-facts {
+            display: flex;
+            margin-top: 48px;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .quick-fact {
+            min-width: 135px;
+            padding: 16px 18px;
+            background: rgba(255, 255, 255, 0.10);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: var(--radius-small);
+            backdrop-filter: blur(12px);
+        }
+
+        .quick-fact strong {
+            display: block;
+            font-size: 1.05rem;
+        }
+
+        .quick-fact span {
+            color: rgba(255, 255, 255, 0.72);
+            font-size: 0.82rem;
+        }
+
+        /* =========================================================
+           5. WELCOME AND AMENITIES
+        ========================================================= */
+
+        .welcome-grid {
+            display: grid;
+            align-items: center;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+        }
+
+        .welcome-image {
+            position: relative;
+        }
+
+        .welcome-image img {
+            width: 100%;
+            height: 540px;
+            object-fit: cover;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .image-badge {
+            position: absolute;
+            right: -20px;
+            bottom: 28px;
+            max-width: 230px;
+            padding: 18px 20px;
+            color: white;
+            background: var(--primary);
+            border-radius: var(--radius-small);
+            box-shadow: var(--shadow);
+        }
+
+        .image-badge strong {
+            display: block;
+            color: var(--accent-light);
+            font-size: 1.1rem;
+        }
+
+        .welcome-copy h2 {
+            color: var(--primary);
+            font-size: clamp(2.25rem, 5vw, 4rem);
+            line-height: 1.06;
+            letter-spacing: -0.045em;
+        }
+
+        .welcome-copy p {
+            margin-top: 20px;
+            color: var(--text-light);
+            font-size: 1.08rem;
+        }
+
+        .check-list {
+            display: grid;
+            margin-top: 28px;
+            gap: 14px;
+        }
+
+        .check-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-weight: 700;
+        }
+
+        .check-icon {
+            display: grid;
+            flex: 0 0 27px;
+            width: 27px;
+            height: 27px;
+            place-items: center;
+            color: white;
+            background: var(--success);
+            border-radius: 50%;
+            font-size: 0.8rem;
+        }
+
+        .amenities-section {
+            background: var(--surface);
+        }
+
+        .amenities-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 17px;
+        }
+
+        .amenity-card {
+            min-height: 180px;
+            padding: 24px;
+            background: var(--surface-soft);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-small);
+            transition:
+                transform 0.25s ease,
+                box-shadow 0.25s ease,
+                border-color 0.25s ease;
+        }
+
+        .amenity-card:hover {
+            border-color: rgba(217, 159, 89, 0.55);
+            box-shadow: var(--shadow-small);
+            transform: translateY(-6px);
+        }
+
+        .amenity-icon {
+            display: grid;
+            width: 50px;
+            height: 50px;
+            margin-bottom: 17px;
+            place-items: center;
+            color: var(--primary);
+            background: #efe4d4;
+            border-radius: 15px;
+            font-size: 1.45rem;
+        }
+
+        .amenity-card h3 {
+            margin-bottom: 6px;
+            color: var(--primary);
+            font-size: 1rem;
+        }
+
+        .amenity-card p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        /* =========================================================
+           6. INFORMATION CARDS
+        ========================================================= */
+
+        .information-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 22px;
+        }
+
+        .info-card {
+            padding: 30px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-small);
+        }
+
+        .info-card.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .info-card-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 22px;
+        }
+
+        .info-card-icon {
+            display: grid;
+            flex: 0 0 52px;
+            width: 52px;
+            height: 52px;
+            place-items: center;
+            color: white;
+            background: var(--primary);
+            border-radius: 16px;
+            font-size: 1.45rem;
+        }
+
+        .info-card h3 {
+            color: var(--primary);
+            font-size: 1.3rem;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 0;
+            gap: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .info-row:last-child {
+            border-bottom: 0;
+        }
+
+        .info-row span:first-child {
+            color: var(--text-light);
+        }
+
+        .info-row strong {
+            color: var(--primary);
+            text-align: right;
+            overflow-wrap: anywhere;
+        }
+
+        .copy-button {
+            margin-left: 8px;
+            padding: 6px 10px;
+            color: white;
+            background: var(--primary-light);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 800;
+        }
+
+        .rules-list {
+            display: grid;
+            gap: 13px;
+        }
+
+        .rules-list li {
+            display: flex;
+            gap: 13px;
+            padding: 13px 15px;
+            background: var(--surface-soft);
+            border-radius: 12px;
+        }
+
+        .rule-number {
+            color: var(--accent);
+            font-weight: 900;
+        }
+
+        .nearby-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .nearby-item {
+            padding: 21px;
+            background: var(--surface-soft);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-small);
+        }
+
+        .nearby-item span {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1.65rem;
+        }
+
+        .nearby-item h4 {
+            color: var(--primary);
+        }
+
+        .nearby-item p {
+            margin-top: 4px;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        /* =========================================================
+           7. CONTACT AND FOOTER
+        ========================================================= */
+
+        .contact-section {
+            color: white;
+            background: var(--primary);
+        }
+
+        .contact-section .section-label {
+            color: var(--accent-light);
+        }
+
+        .contact-section .section-heading h2,
+        .contact-section .section-heading p {
+            color: white;
+        }
+
+        .contact-section .section-heading p {
+            opacity: 0.76;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 24px;
+        }
+
+        .contact-card {
+            padding: 32px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: var(--radius);
+        }
+
+        .contact-card h3 {
+            color: var(--accent-light);
+            font-size: 1.35rem;
+        }
+
+        .contact-card p {
+            margin-top: 8px;
+            color: rgba(255, 255, 255, 0.76);
+        }
+
+        .contact-links {
+            display: grid;
+            margin-top: 23px;
+            gap: 12px;
+        }
+
+        .contact-link {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        .contact-link:hover {
+            background: rgba(255, 255, 255, 0.14);
+        }
+
+        .emergency-item {
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+        }
+
+        .emergency-item:last-child {
+            border-bottom: 0;
+        }
+
+        .emergency-item strong {
+            display: block;
+            color: var(--accent-light);
+            font-size: 1.2rem;
+        }
+
+        footer {
+            padding: 28px 24px;
+            color: rgba(255, 255, 255, 0.68);
+            background: #0b1d2d;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        /* Toast notification */
+
+        .toast {
+            position: fixed;
+            z-index: 2000;
+            right: 20px;
+            bottom: 20px;
+            max-width: calc(100% - 40px);
+            padding: 13px 18px;
+            color: white;
+            background: var(--success);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(20px);
+            transition:
+                opacity 0.3s ease,
+                transform 0.3s ease;
+        }
+
+        .toast.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* =========================================================
+           8. RESPONSIVE DESIGN
+        ========================================================= */
+
+        @media (max-width: 980px) {
+            .nav-links {
+                position: absolute;
+                top: calc(100% + 1px);
+                right: 0;
+                left: 0;
+                display: none;
+                padding: 22px 24px 28px;
+                background: white;
+                border-bottom: 1px solid var(--border);
+                box-shadow: var(--shadow-small);
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+
+            .nav-links.open {
+                display: flex;
+            }
+
+            .menu-button {
+                display: grid;
+                place-items: center;
+            }
+
+            .welcome-grid,
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .welcome-image {
+                max-width: 720px;
+            }
+
+            .amenities-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 760px) {
+            section {
+                padding: 68px 18px;
+            }
+
+            .hero {
+                min-height: auto;
+                padding: 175px 18px 100px;
+                background-position: 62% center;
+            }
+
+            .hero h1 {
+                font-size: clamp(3rem, 14vw, 4.8rem);
+            }
+
+            .language-name {
+                display: none;
+            }
+
+            .language-button {
+                width: 42px;
+                height: 38px;
+                padding: 4px;
+                justify-content: center;
+            }
+
+            .quick-facts {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .quick-fact {
+                min-width: 0;
+            }
+
+            .welcome-image img {
+                height: 390px;
+            }
+
+            .image-badge {
+                right: 12px;
+                bottom: 12px;
+                left: 12px;
+                max-width: none;
+            }
+
+            .amenities-grid,
+            .information-grid,
+            .nearby-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .info-card.full-width {
+                grid-column: auto;
+            }
+
+            .nearby-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .brand-text {
+                font-size: 0.9rem;
+            }
+
+            .hero-actions {
+                display: grid;
+            }
+
+            .button {
+                width: 100%;
+            }
+
+            .amenities-grid,
+            .information-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .info-card {
+                padding: 23px;
+            }
+
+            .info-row {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 4px;
+            }
+
+            .info-row strong {
+                text-align: left;
+            }
+
+            .contact-card {
+                padding: 24px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            *,
+            *::before,
+            *::after {
+                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar" aria-label="Primary navigation">
+        <div class="container nav-inner">
+            #home
+                <span class="brand-icon" aria-hidden="true">⌂</span>
+                <span class="brand-text" data-i18n="brand">
+                    Turin Guest House
+                </span>
+            </a>
+
+            <div class="nav-links" id="navLinks">
+                #welcomeWelcome</a>
+                #amenitiesAmenities</a>
+                #informationGuest guide</a>
+                #contactContact</a>
+            </div>
+
+            <button
+                class="menu-button"
+                id="menuButton"
+                type="button"
+                aria-label="Open navigation menu"
+                aria-expanded="false"
+            >
+                ☰
+            </button>
+        </div>
+
+        <!-- Country flags -->
+        <div class="language-bar">
+            <div class="language-list" aria-label="Select language">
+
+                <button class="language-button" data-language="en" type="button">
+                    <span class="flag" aria-hidden="true">🇬🇧</span>
+                    <span class="language-name">English</span>
+                </button>
+
+                <button class="language-button" data-language="it" type="button">
+                    <span class="flag" aria-hidden="true">🇮🇹</span>
+                    <span class="language-name">Italiano</span>
+                </button>
+
+                <button class="language-button" data-language="fr" type="button">
+                    <span class="flag" aria-hidden="true">🇫🇷</span>
+                    <span class="language-name">Français</span>
+                </button>
+
+                <button class="language-button" data-language="de" type="button">
+                    <span class="flag" aria-hidden="true">🇩🇪</span>
+                    <span class="language-name">Deutsch</span>
+                </button>
+
+                <button class="language-button" data-language="es" type="button">
+                    <span class="flag" aria-hidden="true">🇪🇸</span>
+                    <span class="language-name">Español</span>
+                </button>
+
+                <button class="language-button" data-language="pt" type="button">
+                    <span class="flag" aria-hidden="true">🇵🇹</span>
+                    <span class="language-name">Português</span>
+                </button>
+
+                <button class="language-button" data-language="zh" type="button">
+                    <span class="flag" aria-hidden="true">🇨🇳</span>
+                    <span class="language-name">中文</span>
+                </button>
+
+            </div>
+        </div>
+    </nav>
+
+    <main>
+
+        <!-- Hero -->
+        <section class="hero" id="home">
+            <div class="hero-content">
+                <div class="hero-text">
+
+                    <div class="hero-tag">
+                        <span aria-hidden="true">✦</span>
+                        <span data-i18n="heroTag">Your home in Turin</span>
+                    </div>
+
+                    <h1 data-i18n="heroTitle">
+                        Welcome to our apartment
+                    </h1>
+
+                    <p class="hero-description" data-i18n="heroText">
+                        We are delighted to welcome you. This digital guide
+                        contains everything you need for a comfortable and
+                        enjoyable stay.
+                    </p>
+
+                    <div class="hero-actions">
+                        #information
+                            Open guest guide
+                        </a>
+
+                        #contact
+                            Contact your host
+                        </a>
+                    </div>
+
+                    <div class="quick-facts">
+                        <div class="quick-fact">
+                            <strong>2</strong>
+                            <span data-i18n="bedrooms">Bedrooms</span>
+                        </div>
+
+                        <div class="quick-fact">
+                            <strong>Wi-Fi</strong>
+                            <span data-i18n="included">Included</span>
+                        </div>
+
+                        <div class="quick-fact">
+                            <strong>10:00</strong>
+                            <span data-i18n="checkout">Check-out</span>
+                        </div>
+
+                        <div class="quick-fact">
+                            <strong>24/7</strong>
+                            <span data-i18n="hostSupport">Host support</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Welcome section -->
+        <section id="welcome">
+            <div class="container welcome-grid">
+
+                <div class="welcome-image">
+                    https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1400&q=85
+
+                    <div class="image-badge">
+                        <strong data-i18n="comfortableStay">
+                            Everything for a comfortable stay
+                        </strong>
+                        <span data-i18n="comfortableStayText">
+                            Relax, feel at home and enjoy Turin.
+                        </span>
+                    </div>
+                </div>
+
+                <div class="welcome-copy">
+                    <span class="section-label" data-i18n="welcomeLabel">
+                        A warm welcome
+                    </span>
+
+                    <h2 data-i18n="welcomeTitle">
+                        Make yourself at home
+                    </h2>
+
+                    <p data-i18n="welcomeText">
+                        Our apartment has been prepared to make your visit
+                        comfortable and memorable. You will find modern
+                        interiors, practical amenities and convenient access
+                        to public transport.
+                    </p>
+
+                    <ul class="check-list">
+                        <li>
+                            <span class="check-icon">✓</span>
+                            <span data-i18n="welcomePoint1">
+                                Clean sheets and towels are provided.
+                            </span>
+                        </li>
+
+                        <li>
+                            <span class="check-icon">✓</span>
+                            <span data-i18n="welcomePoint2">
+                                Wi-Fi is available throughout the apartment.
+                            </span>
+                        </li>
+
+                        <li>
+                            <span class="check-icon">✓</span>
+                            <span data-i18n="welcomePoint3">
+                                Metro connections and parking are nearby.
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Amenities -->
+        <section class="amenities-section" id="amenities">
+            <div class="container">
+
+                <div class="section-heading">
+                    <span class="section-label" data-i18n="amenitiesLabel">
+                        Apartment facilities
+                    </span>
+
+                    <h2 data-i18n="amenitiesTitle">
+                        Everything you need
+                    </h2>
+
+                    <p data-i18n="amenitiesText">
+                        Enjoy convenient facilities designed for short or
+                        extended stays.
+                    </p>
+                </div>
+
+                <div class="amenities-grid">
+
+                    <article class="amenity-card">
+                        <div class="amenity-icon">🛏️</div>
+                        <h3 data-i18n="amenityBedrooms">Two bedrooms</h3>
+                        <p data-i18n="amenityBedroomsText">
+                            Comfortable sleeping areas with clean linens.
+                        </p>
+                    </article>
+
+                    <article class="amenity-card">
+                        <div class="amenity-icon">❄️</div>
+                        <h3 data-i18n="amenityAir">Air conditioning</h3>
+                        <p data-i18n="amenityAirText">
+                            Comfortable indoor temperature during your stay.
+                        </p>
+                    </article>
+
+                    <article class="amenity-card">
+                        <div class="amenity-icon">📶</div>
+                        <h3 data-i18n="amenityWifi">Fast Wi-Fi</h3>
+                        <p data-i18n="amenityWifiText">
+                            Internet access throughout the apartment.
+                        </p>
+                    </article>
+
+                    <article class="amenity-card">
+                        <div class="amenity-icon">☕</div>
+                        <h3 data-i18n="amenityCoffee">Espresso machine</h3>
+                        <p data-i18n="amenityCoffeeText">
+                            Start your morning with Italian coffee.
+                        </p>
+                    </article>
+
+                    <article class="amenity-card">
+                        <div class="amenity-icon">🍳</div>
+                        <h3 data-i18n="amenityKitchen">Equipped kitchen</h3>
+                        <p data-i18n="amenityKitchenText">
+                            Prepare meals whenever you wish.
+                        </p>
+                    </article>
+
+                    <article class="amenity-card">
+                        <div class="amenity-icon">🧺</div>
+                        <h3 data-i18n="amenityWashing">Washing machine</h3>
+                        <p data-i18n="amenityWashingText">
+                            Useful for longer visits and family stays.
+                        </p>
+                    </article>
+
+                    <article class="amenity-card">
+                        <div class="amenity-icon">📺</div>
+                        <h3 data-i18n="amenityTv">Smart TV</h3>
+                        <p data-i18n="amenityTvText">
+                            Netflix and Amazon Prime Video applications.
+                        </p>
+                    </article>
+
+                    <article class="amenity-card">
+                        <div class="amenity-icon">🌇</div>
+                        <h3 data-i18n="amenityBalcony">Balcony and view</h3>
+                        <p data-i18n="amenityBalconyText">
+                            Relax outdoors and enjoy the surroundings.
+                        </p>
+                    </article>
+
+                    <article class="amenity-card">
+                        <div class="amenity-icon">🚗</div>
+                        <h3 data-i18n="amenityParking">Street parking</h3>
+                        <p data-i18n="amenityParkingText">
+                            Free public parking is available on the road.
+                        </p>
+                    </article>
+
+                    <article class="amenity-card">
+                        <div class="amenity-icon">🚇</div>
+                        <h3 data-i18n="amenityMetro">Metro nearby</h3>
+                        <p data-i18n="amenityMetroText">
+                            Convenient transport connections to Turin.
+                        </p>
+                    </article>
+
+                    <article class="amenity-card">
+                        <div class="amenity-icon">🧴</div>
+                        <h3 data-i18n="amenityLinen">Sheets and towels</h3>
+                        <p data-i18n="amenityLinenText">
+                            Fresh linens and towels are provided.
+                        </p>
+                    </article>
+
+                    <article class="amenity-card">
+                        <div class="amenity-icon">✨</div>
+                        <h3 data-i18n="amenityModern">Modern interior</h3>
+                        <p data-i18n="amenityModernText">
+                            A welcoming, practical and contemporary space.
+                        </p>
+                    </article>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Guest information -->
+        <section id="information">
+            <div class="container">
+
+                <div class="section-heading">
+                    <span class="section-label" data-i18n="informationLabel">
+                        Useful information
+                    </span>
+
+                    <h2 data-i18n="informationTitle">
+                        Your guest guide
+                    </h2>
+
+                    <p data-i18n="informationText">
+                        Keep these details available during your stay.
+                    </p>
+                </div>
+
+                <div class="information-grid">
+
+                    <!-- Wi-Fi -->
+                    <article class="info-card">
+                        <div class="info-card-header">
+                            <div class="info-card-icon">📶</div>
+                            <h3 data-i18n="wifiTitle">Wi-Fi information</h3>
+                        </div>
+
+                        <div class="info-row">
+                            <span data-i18n="network">Network</span>
+                            <strong>
+                                Apartment-WiFi
+                                <button
+                                    class="copy-button"
+                                    type="button"
+                                    data-copy="Apartment-WiFi"
+                                    data-i18n="copy"
+                                >
+                                    Copy
+                                </button>
+                            </strong>
+                        </div>
+
+                        <div class="info-row">
+                            <span data-i18n="password">Password</span>
+                            <strong>
+                                ChangeMe123
+                                <button
+                                    class="copy-button"
+                                    type="button"
+                                    data-copy="ChangeMe123"
+                                    data-i18n="copy"
+                                >
+                                    Copy
+                                </button>
+                            </strong>
+                        </div>
+                    </article>
+
+                    <!-- Arrival and departure -->
+                    <article class="info-card">
+                        <div class="info-card-header">
+                            <div class="info-card-icon">🔑</div>
+                            <h3 data-i18n="arrivalTitle">
+                                Arrival and departure
+                            </h3>
+                        </div>
+
+                        <div class="info-row">
+                            <span data-i18n="checkinLabel">Check-in</span>
+                            <strong data-i18n="checkinValue">From 3:00 PM</strong>
+                        </div>
+
+                        <div class="info-row">
+                            <span data-i18n="checkoutLabel">Check-out</span>
+                            <strong data-i18n="checkoutValue">
+                                Before 10:00 AM
+                            </strong>
+                        </div>
+
+                        <div class="info-row">
+                            <span data-i18n="keysLabel">Keys</span>
+                            <strong data-i18n="keysValue">
+                                Follow your host's instructions
+                            </strong>
+                        </div>
+                    </article>
+
+                    <!-- House rules -->
+                    <article class="info-card">
+                        <div class="info-card-header">
+                            <div class="info-card-icon">📋</div>
+                            <h3 data-i18n="rulesTitle">House rules</h3>
+                        </div>
+
+                        <ul class="rules-list">
+                            <li>
+                                <span class="rule-number">01</span>
+                                <span data-i18n="rule1">
+                                    Smoking is not permitted inside.
+                                </span>
+                            </li>
+
+                            <li>
+                                <span class="rule-number">02</span>
+                                <span data-i18n="rule2">
+                                    Please respect our neighbors.
+                                </span>
+                            </li>
+
+                            <li>
+                                <span class="rule-number">03</span>
+                                <span data-i18n="rule3">
+                                    Keep noise low during the night.
+                                </span>
+                            </li>
+
+                            <li>
+                                <span class="rule-number">04</span>
+                                <span data-i18n="rule4">
+                                    Turn off lights and air conditioning
+                                    when leaving.
+                                </span>
+                            </li>
+                        </ul>
+                    </article>
+
+                    <!-- Check-out -->
+                    <article class="info-card">
+                        <div class="info-card-header">
+                            <div class="info-card-icon">👋</div>
+                            <h3 data-i18n="departureTitle">
+                                Before departure
+                            </h3>
+                        </div>
+
+                        <ul class="rules-list">
+                            <li>
+                                <span class="rule-number">01</span>
+                                <span data-i18n="departure1">
+                                    Close all windows.
+                                </span>
+                            </li>
+
+                            <li>
+                                <span class="rule-number">02</span>
+                                <span data-i18n="departure2">
+                                    Switch off lights and appliances.
+                                </span>
+                            </li>
+
+                            <li>
+                                <span class="rule-number">03</span>
+                                <span data-i18n="departure3">
+                                    Leave the apartment reasonably tidy.
+                                </span>
+                            </li>
+
+                            <li>
+                                <span class="rule-number">04</span>
+                                <span data-i18n="departure4">
+                                    Return the keys as instructed.
+                                </span>
+                            </li>
+                        </ul>
+                    </article>
+
+                    <!-- Nearby -->
+                    <article class="info-card full-width">
+                        <div class="info-card-header">
+                            <div class="info-card-icon">📍</div>
+                            <h3 data-i18n="nearbyTitle">Nearby services</h3>
+                        </div>
+
+                        <div class="nearby-grid">
+                            <div class="nearby-item">
+                                <span>🚇</span>
+                                <h4 data-i18n="metroTitle">Metro</h4>
+                                <p data-i18n="metroText">
+                                    Check the nearest station and current
+                                    timetable.
+                                </p>
+                            </div>
+
+                            <div class="nearby-item">
+                                <span>🛒</span>
+                                <h4 data-i18n="supermarketTitle">Supermarket</h4>
+                                <p data-i18n="supermarketText">
+                                    Essential groceries and household products.
+                                </p>
+                            </div>
+
+                            <div class="nearby-item">
+                                <span>🍕</span>
+                                <h4 data-i18n="restaurantsTitle">Restaurants</h4>
+                                <p data-i18n="restaurantsText">
+                                    Discover local restaurants, cafés and
+                                    pizzerias.
+                                </p>
+                            </div>
+                        </div>
+                    </article>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact -->
+        <section class="contact-section" id="contact">
+            <div class="container">
+
+                <div class="section-heading">
+                    <span class="section-label" data-i18n="contactLabel">
+                        We are here to help
+                    </span>
+
+                    <h2 data-i18n="contactTitle">
+                        Contact your host
+                    </h2>
+
+                    <p data-i18n="contactText">
+                        If you need assistance during your stay, please contact
+                        us using one of the options below.
+                    </p>
+                </div>
+
+                <div class="contact-grid">
+
+                    <article class="contact-card">
+                        <h3 data-i18n="hostTitle">Host contact</h3>
+
+                        <p data-i18n="hostText">
+                            For apartment questions, arrival assistance or
+                            urgent problems.
+                        </p>
+
+                        <div class="contact-links">
+                            <!-- Replace the telephone number -->
+                            tel:+390000000000
+                                <span>📞</span>
+                                <span>+39 000 000 0000</span>
+                            </a>
+
+                            <!-- Replace the WhatsApp number -->
+                            https://wa.me/390000000000
+                                <span>💬</span>
+                                <span>WhatsApp</span>
+                            </a>
+
+                            <!-- Replace the email address -->
+                            host@example.com
+                                <span>✉️</span>
+                                <span>host@example.com</span>
+                            </a>
+
+                            <!-- Replace the address -->
+                            https://www.google.com/maps/search/?api=1&query=Turin+Italy
+                                <span>📍</span>
+                                <span data-i18n="apartmentAddress">
+                                    Your apartment address, Turin
+                                </span>
+                            </a>
+                        </div>
+                    </article>
+
+                    <article class="contact-card">
+                        <h3 data-i18n="emergencyTitle">
+                            Emergency information
+                        </h3>
+
+                        <div class="emergency-item">
+                            <strong>112</strong>
+                            <span data-i18n="emergency112">
+                                European emergency number
+                            </span>
+                        </div>
+
+                        <div class="emergency-item">
+                            <strong>115</strong>
+                            <span data-i18n="fireService">
+                                Fire service
+                            </span>
+                        </div>
+
+                        <div class="emergency-item">
+                            <strong>118</strong>
+                            <span data-i18n="medicalEmergency">
+                                Medical emergency
+                            </span>
+                        </div>
+                    </article>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p data-i18n="footerText">
+            Thank you for staying with us. Enjoy your visit to Turin.
+        </p>
+    </footer>
+
+    <div class="toast" id="toast" role="status" aria-live="polite">
+        Copied
+    </div>
+
+    <script>
+        /* =========================================================
+           TRANSLATIONS
+        ========================================================= */
+
+        const translations = {
+            en: {
+                pageTitle: "Welcome to Our Apartment",
+                brand: "Turin Guest House",
+                navWelcome: "Welcome",
+                navAmenities: "Amenities",
+                navInformation: "Guest guide",
+                navContact: "Contact",
+                heroTag: "Your home in Turin",
+                heroTitle: "Welcome to our apartment",
+                heroText: "We are delighted to welcome you. This digital guide contains everything you need for a comfortable and enjoyable stay.",
+                openGuide: "Open guest guide",
+                contactHost: "Contact your host",
+                bedrooms: "Bedrooms",
+                included: "Included",
+                checkout: "Check-out",
+                hostSupport: "Host support",
+                comfortableStay: "Everything for a comfortable stay",
+                comfortableStayText: "Relax, feel at home and enjoy Turin.",
+                welcomeLabel: "A warm welcome",
+                welcomeTitle: "Make yourself at home",
+                welcomeText: "Our apartment has been prepared to make your visit comfortable and memorable. You will find modern interiors, practical amenities and convenient access to public transport.",
+                welcomePoint1: "Clean sheets and towels are provided.",
+                welcomePoint2: "Wi-Fi is available throughout the apartment.",
+                welcomePoint3: "Metro connections and parking are nearby.",
+                amenitiesLabel: "Apartment facilities",
+                amenitiesTitle: "Everything you need",
+                amenitiesText: "Enjoy convenient facilities designed for short or extended stays.",
+                amenityBedrooms: "Two bedrooms",
+                amenityBedroomsText: "Comfortable sleeping areas with clean linens.",
+                amenityAir: "Air conditioning",
+                amenityAirText: "Comfortable indoor temperature during your stay.",
+                amenityWifi: "Fast Wi-Fi",
+                amenityWifiText: "Internet access throughout the apartment.",
+                amenityCoffee: "Espresso machine",
+                amenityCoffeeText: "Start your morning with Italian coffee.",
+                amenityKitchen: "Equipped kitchen",
+                amenityKitchenText: "Prepare meals whenever you wish.",
+                amenityWashing: "Washing machine",
+                amenityWashingText: "Useful for longer visits and family stays.",
+                amenityTv: "Smart TV",
+                amenityTvText: "Netflix and Amazon Prime Video applications.",
+                amenityBalcony: "Balcony and view",
+                amenityBalconyText: "Relax outdoors and enjoy the surroundings.",
+                amenityParking: "Street parking",
+                amenityParkingText: "Free public parking is available on the road.",
+                amenityMetro: "Metro nearby",
+                amenityMetroText: "Convenient transport connections to Turin.",
+                amenityLinen: "Sheets and towels",
+                amenityLinenText: "Fresh linens and towels are provided.",
+                amenityModern: "Modern interior",
+                amenityModernText: "A welcoming, practical and contemporary space.",
+                informationLabel: "Useful information",
+                informationTitle: "Your guest guide",
+                informationText: "Keep these details available during your stay.",
+                wifiTitle: "Wi-Fi information",
+                network: "Network",
+                password: "Password",
+                copy: "Copy",
+                copied: "Copied to clipboard",
+                arrivalTitle: "Arrival and departure",
+                checkinLabel: "Check-in",
+                checkinValue: "From 3:00 PM",
+                checkoutLabel: "Check-out",
+                checkoutValue: "Before 10:00 AM",
+                keysLabel: "Keys",
+                keysValue: "Follow your host's instructions",
+                rulesTitle: "House rules",
+                rule1: "Smoking is not permitted inside.",
+                rule2: "Please respect our neighbors.",
+                rule3: "Keep noise low during the night.",
+                rule4: "Turn off lights and air conditioning when leaving.",
+                departureTitle: "Before departure",
+                departure1: "Close all windows.",
+                departure2: "Switch off lights and appliances.",
+                departure3: "Leave the apartment reasonably tidy.",
+                departure4: "Return the keys as instructed.",
+                nearbyTitle: "Nearby services",
+                metroTitle: "Metro",
+                metroText: "Check the nearest station and current timetable.",
+                supermarketTitle: "Supermarket",
+                supermarketText: "Essential groceries and household products.",
+                restaurantsTitle: "Restaurants",
+                restaurantsText: "Discover local restaurants, cafés and pizzerias.",
+                contactLabel: "We are here to help",
+                contactTitle: "Contact your host",
+                contactText: "If you need assistance during your stay, please contact us using one of the options below.",
+                hostTitle: "Host contact",
+                hostText: "For apartment questions, arrival assistance or urgent problems.",
+                apartmentAddress: "Your apartment address, Turin",
+                emergencyTitle: "Emergency information",
+                emergency112: "European emergency number",
+                fireService: "Fire service",
+                medicalEmergency: "Medical emergency",
+                footerText: "Thank you for staying with us. Enjoy your visit to Turin."
+            },
+
+            it: {
+                pageTitle: "Benvenuti nel nostro appartamento",
+                brand: "Casa Ospiti Torino",
+                navWelcome: "Benvenuti",
+                navAmenities: "Servizi",
+                navInformation: "Guida ospiti",
+                navContact: "Contatti",
+                heroTag: "La vostra casa a Torino",
+                heroTitle: "Benvenuti nel nostro appartamento",
+                heroText: "Siamo lieti di accogliervi. Questa guida digitale contiene tutto ciò che serve per un soggiorno comodo e piacevole.",
+                openGuide: "Apri la guida",
+                contactHost: "Contatta l'host",
+                bedrooms: "Camere",
+                included: "Incluso",
+                checkout: "Check-out",
+                hostSupport: "Assistenza host",
+                comfortableStay: "Tutto per un soggiorno confortevole",
+                comfortableStayText: "Rilassatevi, sentitevi a casa e godetevi Torino.",
+                welcomeLabel: "Un caloroso benvenuto",
+                welcomeTitle: "Sentitevi come a casa",
+                welcomeText: "Il nostro appartamento è stato preparato per rendere la vostra visita comoda e indimenticabile. Troverete interni moderni, servizi pratici e comodi collegamenti con i mezzi pubblici.",
+                welcomePoint1: "Lenzuola e asciugamani puliti sono forniti.",
+                welcomePoint2: "Il Wi-Fi è disponibile in tutto l'appartamento.",
+                welcomePoint3: "Metropolitana e parcheggio sono nelle vicinanze.",
+                amenitiesLabel: "Servizi dell'appartamento",
+                amenitiesTitle: "Tutto ciò che serve",
+                amenitiesText: "Servizi comodi per soggiorni brevi o prolungati.",
+                amenityBedrooms: "Due camere",
+                amenityBedroomsText: "Zone notte confortevoli con biancheria pulita.",
+                amenityAir: "Aria condizionata",
+                amenityAirText: "Temperatura interna confortevole durante il soggiorno.",
+                amenityWifi: "Wi-Fi veloce",
+                amenityWifiText: "Accesso a Internet in tutto l'appartamento.",
+                amenityCoffee: "Macchina da espresso",
+                amenityCoffeeText: "Iniziate la giornata con un caffè italiano.",
+                amenityKitchen: "Cucina attrezzata",
+                amenityKitchenText: "Preparate i vostri pasti quando desiderate.",
+                amenityWashing: "Lavatrice",
+                amenityWashingText: "Utile per soggiorni lunghi e per le famiglie.",
+                amenityTv: "Smart TV",
+                amenityTvText: "Applicazioni Netflix e Amazon Prime Video.",
+                amenityBalcony: "Balcone e vista",
+                amenityBalconyText: "Rilassatevi all'aperto e godetevi i dintorni.",
+                amenityParking: "Parcheggio in strada",
+                amenityParkingText: "Parcheggio pubblico gratuito disponibile in strada.",
+                amenityMetro: "Metro nelle vicinanze",
+                amenityMetroText: "Comodi collegamenti per raggiungere Torino.",
+                amenityLinen: "Lenzuola e asciugamani",
+                amenityLinenText: "Biancheria e asciugamani puliti sono forniti.",
+                amenityModern: "Interni moderni",
+                amenityModernText: "Uno spazio accogliente, pratico e contemporaneo.",
+                informationLabel: "Informazioni utili",
+                informationTitle: "La vostra guida",
+                informationText: "Tenete queste informazioni a disposizione durante il soggiorno.",
+                wifiTitle: "Informazioni Wi-Fi",
+                network: "Rete",
+                password: "Password",
+                copy: "Copia",
+                copied: "Copiato negli appunti",
+                arrivalTitle: "Arrivo e partenza",
+                checkinLabel: "Check-in",
+                checkinValue: "Dalle 15:00",
+                checkoutLabel: "Check-out",
+                checkoutValue: "Entro le 10:00",
+                keysLabel: "Chiavi",
+                keysValue: "Seguite le istruzioni dell'host",
+                rulesTitle: "Regole della casa",
+                rule1: "È vietato fumare all'interno.",
+                rule2: "Si prega di rispettare i vicini.",
+                rule3: "Mantenete basso il rumore durante la notte.",
+                rule4: "Spegnete luci e aria condizionata quando uscite.",
+                departureTitle: "Prima della partenza",
+                departure1: "Chiudete tutte le finestre.",
+                departure2: "Spegnete luci ed elettrodomestici.",
+                departure3: "Lasciate l'appartamento ragionevolmente ordinato.",
+                departure4: "Restituite le chiavi come indicato.",
+                nearbyTitle: "Servizi nelle vicinanze",
+                metroTitle: "Metropolitana",
+                metroText: "Controllate la stazione più vicina e gli orari.",
+                supermarketTitle: "Supermercato",
+                supermarketText: "Generi alimentari e prodotti per la casa.",
+                restaurantsTitle: "Ristoranti",
+                restaurantsText: "Scoprite ristoranti, bar e pizzerie locali.",
+                contactLabel: "Siamo qui per aiutarvi",
+                contactTitle: "Contattate il vostro host",
+                contactText: "Se avete bisogno di assistenza, contattateci utilizzando una delle opzioni seguenti.",
+                hostTitle: "Contatto host",
+                hostText: "Per domande, assistenza all'arrivo o problemi urgenti.",
+                apartmentAddress: "Indirizzo dell'appartamento, Torino",
+                emergencyTitle: "Informazioni di emergenza",
+                emergency112: "Numero unico europeo per le emergenze",
+                fireService: "Vigili del fuoco",
+                medicalEmergency: "Emergenza sanitaria",
+                footerText: "Grazie per aver soggiornato con noi. Buona visita a Torino."
+            },
+
+            fr: {
+                pageTitle: "Bienvenue dans notre appartement",
+                brand: "Maison d'hôtes Turin",
+                navWelcome: "Bienvenue",
+                navAmenities: "Équipements",
+                navInformation: "Guide",
+                navContact: "Contact",
+                heroTag: "Votre maison à Turin",
+                heroTitle: "Bienvenue dans notre appartement",
+                heroText: "Nous sommes ravis de vous accueillir. Ce guide numérique contient tout ce dont vous avez besoin pour un séjour confortable et agréable.",
+                openGuide: "Ouvrir le guide",
+                contactHost: "Contacter l'hôte",
+                bedrooms: "Chambres",
+                included: "Inclus",
+                checkout: "Départ",
+                hostSupport: "Assistance",
+                comfortableStay: "Tout pour un séjour confortable",
+                comfortableStayText: "Détendez-vous, sentez-vous chez vous et profitez de Turin.",
+                welcomeLabel: "Bienvenue",
+                welcomeTitle: "Faites comme chez vous",
+                welcomeText: "Notre appartement a été préparé pour rendre votre visite confortable et mémorable. Vous y trouverez un intérieur moderne, des équipements pratiques et un accès facile aux transports publics.",
+                welcomePoint1: "Les draps et les serviettes propres sont fournis.",
+                welcomePoint2: "Le Wi-Fi est disponible dans tout l'appartement.",
+                welcomePoint3: "Le métro et le stationnement sont à proximité.",
+                amenitiesLabel: "Équipements",
+                amenitiesTitle: "Tout ce dont vous avez besoin",
+                amenitiesText: "Des équipements pratiques pour les séjours courts ou prolongés.",
+                amenityBedrooms: "Deux chambres",
+                amenityBedroomsText: "Espaces confortables avec du linge propre.",
+                amenityAir: "Climatisation",
+                amenityAirText: "Une température agréable pendant votre séjour.",
+                amenityWifi: "Wi-Fi rapide",
+                amenityWifiText: "Accès Internet dans tout l'appartement.",
+                amenityCoffee: "Machine à expresso",
+                amenityCoffeeText: "Commencez la journée avec un café italien.",
+                amenityKitchen: "Cuisine équipée",
+                amenityKitchenText: "Préparez vos repas quand vous le souhaitez.",
+                amenityWashing: "Lave-linge",
+                amenityWashingText: "Pratique pour les longs séjours et les familles.",
+                amenityTv: "Télévision connectée",
+                amenityTvText: "Applications Netflix et Amazon Prime Video.",
+                amenityBalcony: "Balcon et vue",
+                amenityBalconyText: "Détendez-vous dehors et profitez des environs.",
+                amenityParking: "Stationnement dans la rue",
+                amenityParkingText: "Stationnement public gratuit dans la rue.",
+                amenityMetro: "Métro à proximité",
+                amenityMetroText: "Liaisons pratiques vers Turin.",
+                amenityLinen: "Draps et serviettes",
+                amenityLinenText: "Le linge propre et les serviettes sont fournis.",
+                amenityModern: "Intérieur moderne",
+                amenityModernText: "Un espace accueillant, pratique et contemporain.",
+                informationLabel: "Informations utiles",
+                informationTitle: "Votre guide",
+                informationText: "Gardez ces informations à portée de main.",
+                wifiTitle: "Informations Wi-Fi",
+                network: "Réseau",
+                password: "Mot de passe",
+                copy: "Copier",
+                copied: "Copié dans le presse-papiers",
+                arrivalTitle: "Arrivée et départ",
+                checkinLabel: "Arrivée",
+                checkinValue: "À partir de 15 h",
+                checkoutLabel: "Départ",
+                checkoutValue: "Avant 10 h",
+                keysLabel: "Clés",
+                keysValue: "Suivez les instructions de votre hôte",
+                rulesTitle: "Règlement intérieur",
+                rule1: "Il est interdit de fumer à l'intérieur.",
+                rule2: "Veuillez respecter les voisins.",
+                rule3: "Limitez le bruit pendant la nuit.",
+                rule4: "Éteignez les lumières et la climatisation en sortant.",
+                departureTitle: "Avant votre départ",
+                departure1: "Fermez toutes les fenêtres.",
+                departure2: "Éteignez les lumières et les appareils.",
+                departure3: "Laissez l'appartement raisonnablement rangé.",
+                departure4: "Rendez les clés comme indiqué.",
+                nearbyTitle: "Services à proximité",
+                metroTitle: "Métro",
+                metroText: "Consultez la station la plus proche et les horaires.",
+                supermarketTitle: "Supermarché",
+                supermarketText: "Alimentation et produits essentiels.",
+                restaurantsTitle: "Restaurants",
+                restaurantsText: "Découvrez les restaurants, cafés et pizzerias.",
+                contactLabel: "Nous sommes là pour vous aider",
+                contactTitle: "Contactez votre hôte",
+                contactText: "Si vous avez besoin d'aide, contactez-nous avec l'une des options ci-dessous.",
+                hostTitle: "Contact de l'hôte",
+                hostText: "Pour vos questions, votre arrivée ou un problème urgent.",
+                apartmentAddress: "Adresse de votre appartement, Turin",
+                emergencyTitle: "Informations d'urgence",
+                emergency112: "Numéro d'urgence européen",
+                fireService: "Pompiers",
+                medicalEmergency: "Urgence médicale",
+                footerText: "Merci d'avoir séjourné chez nous. Profitez de Turin."
+            },
+
+            de: {
+                pageTitle: "Willkommen in unserer Wohnung",
+                brand: "Gästehaus Turin",
+                navWelcome: "Willkommen",
+                navAmenities: "Ausstattung",
+                navInformation: "Gästeinfo",
+                navContact: "Kontakt",
+                heroTag: "Ihr Zuhause in Turin",
+                heroTitle: "Willkommen in unserer Wohnung",
+                heroText: "Wir freuen uns, Sie begrüßen zu dürfen. Dieser digitale Leitfaden enthält alles für einen komfortablen und angenehmen Aufenthalt.",
+                openGuide: "Gästeinfo öffnen",
+                contactHost: "Gastgeber kontaktieren",
+                bedrooms: "Schlafzimmer",
+                included: "Inklusive",
+                checkout: "Abreise",
+                hostSupport: "Unterstützung",
+                comfortableStay: "Alles für einen komfortablen Aufenthalt",
+                comfortableStayText: "Entspannen Sie sich und genießen Sie Turin.",
+                welcomeLabel: "Herzlich willkommen",
+                welcomeTitle: "Fühlen Sie sich wie zu Hause",
+                welcomeText: "Unsere Wohnung wurde für einen komfortablen und unvergesslichen Aufenthalt vorbereitet. Sie bietet eine moderne Einrichtung, praktische Ausstattung und eine gute Anbindung an öffentliche Verkehrsmittel.",
+                welcomePoint1: "Saubere Bettwäsche und Handtücher werden bereitgestellt.",
+                welcomePoint2: "WLAN ist in der gesamten Wohnung verfügbar.",
+                welcomePoint3: "U-Bahn und Parkmöglichkeiten sind in der Nähe.",
+                amenitiesLabel: "Ausstattung",
+                amenitiesTitle: "Alles, was Sie benötigen",
+                amenitiesText: "Praktische Ausstattung für kurze oder längere Aufenthalte.",
+                amenityBedrooms: "Zwei Schlafzimmer",
+                amenityBedroomsText: "Komfortable Schlafbereiche mit sauberer Bettwäsche.",
+                amenityAir: "Klimaanlage",
+                amenityAirText: "Angenehme Raumtemperatur während Ihres Aufenthalts.",
+                amenityWifi: "Schnelles WLAN",
+                amenityWifiText: "Internetzugang in der gesamten Wohnung.",
+                amenityCoffee: "Espressomaschine",
+                amenityCoffeeText: "Beginnen Sie den Tag mit italienischem Kaffee.",
+                amenityKitchen: "Ausgestattete Küche",
+                amenityKitchenText: "Bereiten Sie jederzeit Ihre eigenen Mahlzeiten zu.",
+                amenityWashing: "Waschmaschine",
+                amenityWashingText: "Praktisch für längere Aufenthalte und Familien.",
+                amenityTv: "Smart-TV",
+                amenityTvText: "Netflix und Amazon Prime Video.",
+                amenityBalcony: "Balkon und Aussicht",
+                amenityBalconyText: "Entspannen Sie draußen und genießen Sie die Umgebung.",
+                amenityParking: "Parken an der Straße",
+                amenityParkingText: "Kostenlose öffentliche Parkplätze an der Straße.",
+                amenityMetro: "U-Bahn in der Nähe",
+                amenityMetroText: "Praktische Verkehrsanbindung nach Turin.",
+                amenityLinen: "Bettwäsche und Handtücher",
+                amenityLinenText: "Frische Bettwäsche und Handtücher werden bereitgestellt.",
+                amenityModern: "Moderne Einrichtung",
+                amenityModernText: "Ein einladender, praktischer und moderner Raum.",
+                informationLabel: "Nützliche Informationen",
+                informationTitle: "Ihr Gästeführer",
+                informationText: "Bewahren Sie diese Informationen während Ihres Aufenthalts auf.",
+                wifiTitle: "WLAN-Informationen",
+                network: "Netzwerk",
+                password: "Passwort",
+                copy: "Kopieren",
+                copied: "In die Zwischenablage kopiert",
+                arrivalTitle: "Ankunft und Abreise",
+                checkinLabel: "Check-in",
+                checkinValue: "Ab 15:00 Uhr",
+                checkoutLabel: "Check-out",
+                checkoutValue: "Bis 10:00 Uhr",
+                keysLabel: "Schlüssel",
+                keysValue: "Folgen Sie den Anweisungen des Gastgebers",
+                rulesTitle: "Hausregeln",
+                rule1: "Rauchen ist in der Wohnung nicht gestattet.",
+                rule2: "Bitte nehmen Sie Rücksicht auf die Nachbarn.",
+                rule3: "Bitte vermeiden Sie nachts laute Geräusche.",
+                rule4: "Schalten Sie Licht und Klimaanlage beim Verlassen aus.",
+                departureTitle: "Vor der Abreise",
+                departure1: "Schließen Sie alle Fenster.",
+                departure2: "Schalten Sie Licht und Geräte aus.",
+                departure3: "Hinterlassen Sie die Wohnung ordentlich.",
+                departure4: "Geben Sie die Schlüssel wie vereinbart zurück.",
+                nearbyTitle: "Dienste in der Nähe",
+                metroTitle: "U-Bahn",
+                metroText: "Prüfen Sie die nächste Station und den Fahrplan.",
+                supermarketTitle: "Supermarkt",
+                supermarketText: "Lebensmittel und wichtige Haushaltsprodukte.",
+                restaurantsTitle: "Restaurants",
+                restaurantsText: "Entdecken Sie Restaurants, Cafés und Pizzerien.",
+                contactLabel: "Wir helfen Ihnen gerne",
+                contactTitle: "Gastgeber kontaktieren",
+                contactText: "Wenn Sie Hilfe benötigen, kontaktieren Sie uns über eine der folgenden Möglichkeiten.",
+                hostTitle: "Kontakt zum Gastgeber",
+                hostText: "Bei Fragen, Problemen bei der Ankunft oder dringenden Anliegen.",
+                apartmentAddress: "Adresse Ihrer Wohnung, Turin",
+                emergencyTitle: "Notfallinformationen",
+                emergency112: "Europäische Notrufnummer",
+                fireService: "Feuerwehr",
+                medicalEmergency: "Medizinischer Notfall",
+                footerText: "Vielen Dank für Ihren Aufenthalt. Genießen Sie Turin."
+            },
+
+            es: {
+                pageTitle: "Bienvenidos a nuestro apartamento",
+                brand: "Casa de huéspedes Turín",
+                navWelcome: "Bienvenida",
+                navAmenities: "Servicios",
+                navInformation: "Guía",
+                navContact: "Contacto",
+                heroTag: "Su hogar en Turín",
+                heroTitle: "Bienvenidos a nuestro apartamento",
+                heroText: "Nos alegra recibirles. Esta guía digital contiene todo lo necesario para disfrutar de una estancia cómoda y agradable.",
+                openGuide: "Abrir la guía",
+                contactHost: "Contactar con el anfitrión",
+                bedrooms: "Dormitorios",
+                included: "Incluido",
+                checkout: "Salida",
+                hostSupport: "Asistencia",
+                comfortableStay: "Todo para una estancia cómoda",
+                comfortableStayText: "Relájense, siéntanse como en casa y disfruten de Turín.",
+                welcomeLabel: "Una cálida bienvenida",
+                welcomeTitle: "Siéntanse como en casa",
+                welcomeText: "Nuestro apartamento ha sido preparado para que su visita sea cómoda y memorable. Encontrarán interiores modernos, servicios prácticos y un acceso cómodo al transporte público.",
+                welcomePoint1: "Se proporcionan sábanas y toallas limpias.",
+                welcomePoint2: "Hay Wi-Fi en todo el apartamento.",
+                welcomePoint3: "El metro y el aparcamiento están cerca.",
+                amenitiesLabel: "Servicios del apartamento",
+                amenitiesTitle: "Todo lo que necesitan",
+                amenitiesText: "Servicios prácticos para estancias cortas o prolongadas.",
+                amenityBedrooms: "Dos dormitorios",
+                amenityBedroomsText: "Zonas cómodas con ropa de cama limpia.",
+                amenityAir: "Aire acondicionado",
+                amenityAirText: "Temperatura interior agradable durante la estancia.",
+                amenityWifi: "Wi-Fi rápido",
+                amenityWifiText: "Acceso a Internet en todo el apartamento.",
+                amenityCoffee: "Cafetera espresso",
+                amenityCoffeeText: "Comiencen el día con un café italiano.",
+                amenityKitchen: "Cocina equipada",
+                amenityKitchenText: "Preparen sus comidas cuando quieran.",
+                amenityWashing: "Lavadora",
+                amenityWashingText: "Útil para estancias largas y familias.",
+                amenityTv: "Smart TV",
+                amenityTvText: "Aplicaciones de Netflix y Amazon Prime Video.",
+                amenityBalcony: "Balcón y vistas",
+                amenityBalconyText: "Relájense al aire libre y disfruten del entorno.",
+                amenityParking: "Aparcamiento en la calle",
+                amenityParkingText: "Aparcamiento público gratuito en la calle.",
+                amenityMetro: "Metro cercano",
+                amenityMetroText: "Conexiones cómodas con Turín.",
+                amenityLinen: "Sábanas y toallas",
+                amenityLinenText: "Se proporcionan sábanas y toallas limpias.",
+                amenityModern: "Interior moderno",
+                amenityModernText: "Un espacio acogedor, práctico y contemporáneo.",
+                informationLabel: "Información útil",
+                informationTitle: "Su guía",
+                informationText: "Tengan estos datos disponibles durante su estancia.",
+                wifiTitle: "Información Wi-Fi",
+                network: "Red",
+                password: "Contraseña",
+                copy: "Copiar",
+                copied: "Copiado al portapapeles",
+                arrivalTitle: "Llegada y salida",
+                checkinLabel: "Llegada",
+                checkinValue: "Desde las 15:00",
+                checkoutLabel: "Salida",
+                checkoutValue: "Antes de las 10:00",
+                keysLabel: "Llaves",
+                keysValue: "Sigan las instrucciones del anfitrión",
+                rulesTitle: "Normas de la casa",
+                rule1: "No está permitido fumar en el interior.",
+                rule2: "Por favor, respeten a los vecinos.",
+                rule3: "Mantengan un nivel de ruido bajo durante la noche.",
+                rule4: "Apaguen las luces y el aire acondicionado al salir.",
+                departureTitle: "Antes de salir",
+                departure1: "Cierren todas las ventanas.",
+                departure2: "Apaguen las luces y los aparatos.",
+                departure3: "Dejen el apartamento razonablemente ordenado.",
+                departure4: "Devuelvan las llaves según las instrucciones.",
+                nearbyTitle: "Servicios cercanos",
+                metroTitle: "Metro",
+                metroText: "Consulten la estación más cercana y los horarios.",
+                supermarketTitle: "Supermercado",
+                supermarketText: "Alimentos y productos esenciales.",
+                restaurantsTitle: "Restaurantes",
+                restaurantsText: "Descubran restaurantes, cafeterías y pizzerías.",
+                contactLabel: "Estamos aquí para ayudar",
+                contactTitle: "Contacten con su anfitrión",
+                contactText: "Si necesitan ayuda, contáctennos mediante una de las opciones siguientes.",
+                hostTitle: "Contacto del anfitrión",
+                hostText: "Para preguntas, asistencia a la llegada o problemas urgentes.",
+                apartmentAddress: "Dirección del apartamento, Turín",
+                emergencyTitle: "Información de emergencia",
+                emergency112: "Número europeo de emergencias",
+                fireService: "Bomberos",
+                medicalEmergency: "Emergencia médica",
+                footerText: "Gracias por alojarse con nosotros. Disfruten de Turín."
+            },
+
+            pt: {
+                pageTitle: "Bem-vindos ao nosso apartamento",
+                brand: "Casa de hóspedes Turim",
+                navWelcome: "Boas-vindas",
+                navAmenities: "Comodidades",
+                navInformation: "Guia",
+                navContact: "Contato",
+                heroTag: "A sua casa em Turim",
+                heroTitle: "Bem-vindos ao nosso apartamento",
+                heroText: "É um prazer recebê-los. Este guia digital contém tudo o que precisam para uma estadia confortável e agradável.",
+                openGuide: "Abrir o guia",
+                contactHost: "Contatar o anfitrião",
+                bedrooms: "Quartos",
+                included: "Incluído",
+                checkout: "Check-out",
+                hostSupport: "Suporte",
+                comfortableStay: "Tudo para uma estadia confortável",
+                comfortableStayText: "Relaxem, sintam-se em casa e aproveitem Turim.",
+                welcomeLabel: "Boas-vindas",
+                welcomeTitle: "Sintam-se em casa",
+                welcomeText: "O nosso apartamento foi preparado para tornar a sua visita confortável e memorável. Encontrarão interiores modernos, comodidades práticas e fácil acesso ao transporte público.",
+                welcomePoint1: "São fornecidos lençóis e toalhas limpos.",
+                welcomePoint2: "Há Wi-Fi em todo o apartamento.",
+                welcomePoint3: "O metrô e o estacionamento ficam próximos.",
+                amenitiesLabel: "Comodidades",
+                amenitiesTitle: "Tudo o que precisam",
+                amenitiesText: "Comodidades práticas para estadias curtas ou prolongadas.",
+                amenityBedrooms: "Dois quartos",
+                amenityBedroomsText: "Áreas confortáveis com roupa de cama limpa.",
+                amenityAir: "Ar-condicionado",
+                amenityAirText: "Temperatura interna agradável durante a estadia.",
+                amenityWifi: "Wi-Fi rápido",
+                amenityWifiText: "Acesso à Internet em todo o apartamento.",
+                amenityCoffee: "Máquina de espresso",
+                amenityCoffeeText: "Comecem o dia com um café italiano.",
+                amenityKitchen: "Cozinha equipada",
+                amenityKitchenText: "Preparem as suas refeições quando desejarem.",
+                amenityWashing: "Máquina de lavar",
+                amenityWashingText: "Útil para estadias longas e famílias.",
+                amenityTv: "Smart TV",
+                amenityTvText: "Aplicativos Netflix e Amazon Prime Video.",
+                amenityBalcony: "Varanda e vista",
+                amenityBalconyText: "Relaxem ao ar livre e apreciem os arredores.",
+                amenityParking: "Estacionamento na rua",
+                amenityParkingText: "Estacionamento público gratuito na rua.",
+                amenityMetro: "Metrô próximo",
+                amenityMetroText: "Ligações convenientes para Turim.",
+                amenityLinen: "Lençóis e toalhas",
+                amenityLinenText: "São fornecidos lençóis e toalhas limpos.",
+                amenityModern: "Interior moderno",
+                amenityModernText: "Um espaço acolhedor, prático e contemporâneo.",
+                informationLabel: "Informações úteis",
+                informationTitle: "O seu guia",
+                informationText: "Mantenham estas informações disponíveis durante a estadia.",
+                wifiTitle: "Informações do Wi-Fi",
+                network: "Rede",
+                password: "Senha",
+                copy: "Copiar",
+                copied: "Copiado para a área de transferência",
+                arrivalTitle: "Chegada e partida",
+                checkinLabel: "Check-in",
+                checkinValue: "A partir das 15:00",
+                checkoutLabel: "Check-out",
+                checkoutValue: "Antes das 10:00",
+                keysLabel: "Chaves",
+                keysValue: "Sigam as instruções do anfitrião",
+                rulesTitle: "Regras da casa",
+                rule1: "Não é permitido fumar dentro do apartamento.",
+                rule2: "Por favor, respeitem os vizinhos.",
+                rule3: "Mantenham pouco ruído durante a noite.",
+                rule4: "Desliguem as luzes e o ar-condicionado ao sair.",
+                departureTitle: "Antes da partida",
+                departure1: "Fechem todas as janelas.",
+                departure2: "Desliguem luzes e aparelhos.",
+                departure3: "Deixem o apartamento razoavelmente organizado.",
+                departure4: "Devolvam as chaves conforme as instruções.",
+                nearbyTitle: "Serviços próximos",
+                metroTitle: "Metrô",
+                metroText: "Consultem a estação mais próxima e os horários.",
+                supermarketTitle: "Supermercado",
+                supermarketText: "Alimentos e produtos essenciais.",
+                restaurantsTitle: "Restaurantes",
+                restaurantsText: "Descubram restaurantes, cafés e pizzarias.",
+                contactLabel: "Estamos aqui para ajudar",
+                contactTitle: "Contatem o anfitrião",
+                contactText: "Se precisarem de ajuda, entrem em contato por uma das opções abaixo.",
+                hostTitle: "Contato do anfitrião",
+                hostText: "Para perguntas, assistência na chegada ou problemas urgentes.",
+                apartmentAddress: "Endereço do apartamento, Turim",
+                emergencyTitle: "Informações de emergência",
+                emergency112: "Número europeu de emergência",
+                fireService: "Bombeiros",
+                medicalEmergency: "Emergência médica",
+                footerText: "Obrigado por ficarem conosco. Aproveitem Turim."
+            },
+
+            zh: {
+                pageTitle: "欢迎入住我们的公寓",
+                brand: "都灵宾客之家",
+                navWelcome: "欢迎",
+                navAmenities: "设施",
+                navInformation: "住客指南",
+                navContact: "联系",
+                heroTag: "您在都灵的家",
+                heroTitle: "欢迎入住我们的公寓",
+                heroText: "我们很高兴接待您。本电子指南包含您舒适愉快住宿所需的重要信息。",
+                openGuide: "打开住客指南",
+                contactHost: "联系房东",
+                bedrooms: "卧室",
+                included: "已包含",
+                checkout: "退房",
+                hostSupport: "房东支持",
+                comfortableStay: "舒适住宿所需的一切",
+                comfortableStayText: "请放松身心，享受都灵之旅。",
+                welcomeLabel: "热烈欢迎",
+                welcomeTitle: "请把这里当作自己的家",
+                welcomeText: "我们精心准备了这套公寓，希望为您带来舒适难忘的体验。公寓拥有现代化室内设计、实用设施以及便利的公共交通。",
+                welcomePoint1: "我们提供干净的床单和毛巾。",
+                welcomePoint2: "整套公寓均可使用无线网络。",
+                welcomePoint3: "附近有地铁和停车位。",
+                amenitiesLabel: "公寓设施",
+                amenitiesTitle: "您需要的一切",
+                amenitiesText: "适合短期或长期住宿的便利设施。",
+                amenityBedrooms: "两间卧室",
+                amenityBedroomsText: "舒适的睡眠空间和干净的床上用品。",
+                amenityAir: "空调",
+                amenityAirText: "住宿期间保持舒适的室内温度。",
+                amenityWifi: "高速无线网络",
+                amenityWifiText: "整套公寓均可连接互联网。",
+                amenityCoffee: "意式咖啡机",
+                amenityCoffeeText: "用一杯意大利咖啡开始新的一天。",
+                amenityKitchen: "设备齐全的厨房",
+                amenityKitchenText: "您可以随时准备自己的餐食。",
+                amenityWashing: "洗衣机",
+                amenityWashingText: "适合长期住宿和家庭旅客。",
+                amenityTv: "智能电视",
+                amenityTvText: "配有 Netflix 和 Amazon Prime Video 应用。",
+                amenityBalcony: "阳台和景观",
+                amenityBalconyText: "在户外放松并欣赏周边景色。",
+                amenityParking: "路边停车",
+                amenityParkingText: "道路上设有免费公共停车位。",
+                amenityMetro: "邻近地铁",
+                amenityMetroText: "前往都灵交通便利。",
+                amenityLinen: "床单和毛巾",
+                amenityLinenText: "我们提供干净的床单和毛巾。",
+                amenityModern: "现代化室内设计",
+                amenityModernText: "温馨、实用而现代的空间。",
+                informationLabel: "实用信息",
+                informationTitle: "住客指南",
+                informationText: "住宿期间请保留这些信息。",
+                wifiTitle: "无线网络信息",
+                network: "网络名称",
+                password: "密码",
+                copy: "复制",
+                copied: "已复制",
+                arrivalTitle: "入住和退房",
+                checkinLabel: "入住",
+                checkinValue: "15:00 以后",
+                checkoutLabel: "退房",
+                checkoutValue: "10:00 以前",
+                keysLabel: "钥匙",
+                keysValue: "请遵循房东的说明",
+                rulesTitle: "房屋规则",
+                rule1: "公寓内禁止吸烟。",
+                rule2: "请尊重邻居。",
+                rule3: "夜间请保持安静。",
+                rule4: "离开时请关闭灯光和空调。",
+                departureTitle: "退房前",
+                departure1: "请关闭所有窗户。",
+                departure2: "请关闭灯光和电器。",
+                departure3: "请保持公寓基本整洁。",
+                departure4: "请按照说明归还钥匙。",
+                nearbyTitle: "附近服务",
+                metroTitle: "地铁",
+                metroText: "请查看最近的地铁站和时刻表。",
+                supermarketTitle: "超市",
+                supermarketText: "可购买食品和生活必需品。",
+                restaurantsTitle: "餐厅",
+                restaurantsText: "探索当地餐厅、咖啡馆和披萨店。",
+                contactLabel: "我们随时为您提供帮助",
+                contactTitle: "联系房东",
+                contactText: "如果您在住宿期间需要帮助，请使用以下方式联系我们。",
+                hostTitle: "房东联系方式",
+                hostText: "适用于公寓问题、入住帮助或紧急情况。",
+                apartmentAddress: "您的公寓地址，都灵",
+                emergencyTitle: "紧急信息",
+                emergency112: "欧洲紧急电话号码",
+                fireService: "消防服务",
+                medicalEmergency: "医疗急救",
+                footerText: "感谢您的入住，祝您在都灵旅途愉快。"
+            }
+        };
+
+        /* =========================================================
+           LANGUAGE SYSTEM
+        ========================================================= */
+
+        const supportedLanguages = Object.keys(translations);
+        let currentLanguage = "en";
+
+        function setLanguage(language) {
+            if (!supportedLanguages.includes(language)) {
+                language = "en";
+            }
+
+            currentLanguage = language;
+            const dictionary = translations[language];
+
+            document.documentElement.lang = language;
+            document.title = dictionary.pageTitle;
+
+            document.querySelectorAll("[data-i18n]").forEach((element) => {
+                const key = element.dataset.i18n;
+
+                if (dictionary[key] !== undefined) {
+                    element.textContent = dictionary[key];
+                }
+            });
+
+            document.querySelectorAll(".language-button").forEach((button) => {
+                const isActive = button.dataset.language === language;
+
+                button.classList.toggle("active", isActive);
+                button.setAttribute("aria-pressed", String(isActive));
+            });
+
+            localStorage.setItem("guestGuideLanguage", language);
+        }
+
+        function detectLanguage() {
+            const savedLanguage = localStorage.getItem("guestGuideLanguage");
+
+            if (savedLanguage && supportedLanguages.includes(savedLanguage)) {
+                return savedLanguage;
+            }
+
+            const browserLanguage = (
+                navigator.language ||
+                navigator.userLanguage ||
+                "en"
+            ).slice(0, 2).toLowerCase();
+
+            return supportedLanguages.includes(browserLanguage)
+                ? browserLanguage
+                : "en";
+        }
+
+        document.querySelectorAll(".language-button").forEach((button) => {
+            button.addEventListener("click", () => {
+                setLanguage(button.dataset.language);
+            });
+        });
+
+        /* =========================================================
+           MOBILE NAVIGATION
+        ========================================================= */
+
+        const menuButton = document.getElementById("menuButton");
+        const navLinks = document.getElementById("navLinks");
+
+        function closeMenu() {
+            navLinks.classList.remove("open");
+            document.body.classList.remove("menu-open");
+            menuButton.setAttribute("aria-expanded", "false");
+            menuButton.textContent = "☰";
+        }
+
+        menuButton.addEventListener("click", () => {
+            const isOpen = navLinks.classList.toggle("open");
+
+            document.body.classList.toggle("menu-open", isOpen);
+            menuButton.setAttribute("aria-expanded", String(isOpen));
+            menuButton.textContent = isOpen ? "✕" : "☰";
+        });
+
+        navLinks.querySelectorAll("a").forEach((link) => {
+            link.addEventListener("click", closeMenu);
+        });
+
+        window.addEventListener("resize", () => {
+            if (window.innerWidth > 980) {
+                closeMenu();
+            }
+        });
+
+        /* =========================================================
+           COPY WI-FI DETAILS
+        ========================================================= */
+
+        const toast = document.getElementById("toast");
+        let toastTimer;
+
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add("visible");
+
+            clearTimeout(toastTimer);
+
+            toastTimer = setTimeout(() => {
+                toast.classList.remove("visible");
+            }, 2200);
+        }
+
+        document.querySelectorAll("[data-copy]").forEach((button) => {
+            button.addEventListener("click", async () => {
+                const value = button.dataset.copy;
+
+                try {
+                    await navigator.clipboard.writeText(value);
+                } catch (error) {
+                    const temporaryInput = document.createElement("input");
+
+                    temporaryInput.value = value;
+                    document.body.appendChild(temporaryInput);
+                    temporaryInput.select();
+                    document.execCommand("copy");
+                    temporaryInput.remove();
+                }
+
+                showToast(translations[currentLanguage].copied);
+            });
+        });
+
+        /* Start the website in the saved or detected language */
+        setLanguage(detectLanguage());
+    </script>
+
+</body>
+</html>
