@@ -17,7 +17,9 @@ const CONFIG = {
     reviewUrl: "https://g.page/r/CS7gSEFVlZXQEAE/review",
     galleryCount: 5,
     defaultLang: "it",
-    storageKey: "guestLanguage"
+    storageKey: "guestLanguage",
+    lat: 45.0703,   // latitudine (sostituisci con quella esatta)
+    lon: 7.6869    // longitudine
 };
 
 const LANGS = [
@@ -30,6 +32,7 @@ const LANGS = [
 ];
 
 /* L'ordine definisce anche i pulsanti Precedente / Successivo */
+/*
 const PAGES = [
     { id: "home",         file: "index.html",         icon: "🏠" },
     { id: "wifi",         file: "wifi.html",          icon: "📶" },
@@ -43,6 +46,22 @@ const PAGES = [
     { id: "supermarkets", file: "supermercati.html",  icon: "🛒" },
     { id: "emergency",    file: "emergenze.html",     icon: "🚑" },
     { id: "review",       file: "review.html",        icon: "⭐" }
+];
+*/
+
+const PAGES = [
+    { id: "home",         file: "index.html",         icon: "images/icons/home.png",         emoji: "" },
+    { id: "wifi",         file: "wifi.html",          icon: "images/icons/wifi.png",         emoji: "" },
+    { id: "checkin",      file: "check-in.html",      icon: "images/icons/checkin.png",      emoji: "🔑" },
+    { id: "checkout",     file: "check-out.html",     icon: "images/icons/checkout.png",     emoji: "🚪" },
+    { id: "rules",        file: "regole.html",        icon: "images/icons/rules.png",        emoji: "📋" },
+    { id: "directions",   file: "come-arrivare.html", icon: "images/icons/directions.png",   emoji: "📍" },
+    { id: "parking",      file: "parcheggi.html",     icon: "images/icons/parking.png",      emoji: "🚗" },
+    { id: "attractions",  file: "attrazioni.html",    icon: "images/icons/attractions.png",  emoji: "🗺️" },
+    { id: "restaurants",  file: "ristoranti.html",    icon: "images/icons/restaurants.png",  emoji: "🍽️" },
+    { id: "supermarkets", file: "supermercati.html",  icon: "images/icons/supermarkets.png", emoji: "🛒" },
+    { id: "emergency",    file: "emergenze.html",     icon: "images/icons/emergency.png",    emoji: "🚑" },
+    { id: "review",       file: "review.html",        icon: "images/icons/review.png",       emoji: "⭐" }
 ];
 
 /* ---------- 2. TRADUZIONI (se manca una voce si usa l'italiano) ---------- */
@@ -461,6 +480,34 @@ const T = {
     }
 };
 
+/* ---------- Traduzioni widget meteo ---------- */
+const WX_TEXT = {
+    it: { title: "Meteo a Torino", today: "Oggi", feels: "Percepita", hum: "Umidità", wind: "Vento",
+          loading: "Caricamento meteo…", error: "Meteo non disponibile al momento.",
+          c: { clear: "Sereno", partly: "Poco nuvoloso", cloudy: "Nuvoloso", fog: "Nebbia",
+               drizzle: "Pioviggine", rain: "Pioggia", snow: "Neve", storm: "Temporale" } },
+    en: { title: "Weather in Turin", today: "Today", feels: "Feels like", hum: "Humidity", wind: "Wind",
+          loading: "Loading weather…", error: "Weather not available right now.",
+          c: { clear: "Clear", partly: "Partly cloudy", cloudy: "Cloudy", fog: "Fog",
+               drizzle: "Drizzle", rain: "Rain", snow: "Snow", storm: "Thunderstorm" } },
+    fr: { title: "Météo à Turin", today: "Aujourd'hui", feels: "Ressenti", hum: "Humidité", wind: "Vent",
+          loading: "Chargement de la météo…", error: "Météo indisponible pour le moment.",
+          c: { clear: "Ensoleillé", partly: "Peu nuageux", cloudy: "Nuageux", fog: "Brouillard",
+               drizzle: "Bruine", rain: "Pluie", snow: "Neige", storm: "Orage" } },
+    de: { title: "Wetter in Turin", today: "Heute", feels: "Gefühlt", hum: "Feuchtigkeit", wind: "Wind",
+          loading: "Wetter wird geladen…", error: "Wetter derzeit nicht verfügbar.",
+          c: { clear: "Klar", partly: "Leicht bewölkt", cloudy: "Bewölkt", fog: "Nebel",
+               drizzle: "Nieselregen", rain: "Regen", snow: "Schnee", storm: "Gewitter" } },
+    es: { title: "El tiempo en Turín", today: "Hoy", feels: "Sensación", hum: "Humedad", wind: "Viento",
+          loading: "Cargando el tiempo…", error: "Tiempo no disponible en este momento.",
+          c: { clear: "Despejado", partly: "Poco nuboso", cloudy: "Nublado", fog: "Niebla",
+               drizzle: "Llovizna", rain: "Lluvia", snow: "Nieve", storm: "Tormenta" } },
+    zh: { title: "都灵天气", today: "今天", feels: "体感", hum: "湿度", wind: "风速",
+          loading: "正在加载天气…", error: "暂时无法获取天气。",
+          c: { clear: "晴", partly: "少云", cloudy: "多云", fog: "雾",
+               drizzle: "毛毛雨", rain: "雨", snow: "雪", storm: "雷暴" } }
+};
+Object.keys(WX_TEXT).forEach((code) => { if (T[code]) T[code].wx = WX_TEXT[code]; });
 /* ---------- 3. LINGUA ---------- */
 
 let lang = CONFIG.defaultLang;
@@ -530,6 +577,30 @@ function safeImg(src, alt, cls, removeTarget) {
     return img;
 }
 
+/* Icona: immagine (png/jpg/svg/webp) oppure emoji.
+   Se l'immagine non si carica, mostra l'emoji di riserva. */
+const IMG_FILE = /\.(png|jpe?g|svg|webp|gif)$/i;
+
+function iconEl(icon, cls, fallback) {
+    if (!icon) return null;
+
+    if (!IMG_FILE.test(icon)) {
+        return h("span", { class: cls }, icon);
+    }
+
+    const box = h("span", { class: cls + " icon-img" });
+    const img = h("img", { src: icon, alt: "", loading: "lazy" });
+
+    img.addEventListener("error", () => {
+        box.classList.remove("icon-img");
+        box.textContent = fallback || "";
+    });
+
+    box.append(img);
+    return box;
+}
+
+/*
 function card({ icon, title, text, href, label, external = true }) {
     return h("article", { class: "card" },
         icon && h("div", { class: "card-icon" }, icon),
@@ -538,7 +609,16 @@ function card({ icon, title, text, href, label, external = true }) {
         href && (external ? extLink(href, label) : h("a", { class: "btn", href }, label))
     );
 }
+*/
 
+function card({ icon, fallback, title, text, href, label, external = true }) {
+    return h("article", { class: "card" },
+        iconEl(icon, "card-icon", fallback),
+        h("h3", null, title),
+        text && h("p", null, text),
+        href && (external ? extLink(href, label) : h("a", { class: "btn", href }, label))
+    );
+}
 const grid = (items) => h("div", { class: "grid" }, items);
 
 const list = (items, cls = "checklist") =>
@@ -548,6 +628,174 @@ const badge = (label, time) =>
     h("div", { class: "time-badge" }, label + " ", h("strong", null, time));
 
 /* ---------- 5. CONTENUTO DELLE PAGINE ---------- */
+
+/* ---------- Widget meteo (Open-Meteo) ---------- */
+
+const WX = { data: null, promise: null, cacheKey: "wxCache", maxAge: 30 * 60 * 1000 };
+
+const WX_ICON = { clear: "☀️", partly: "⛅", cloudy: "☁️", fog: "🌫️",
+                  drizzle: "🌦️", rain: "🌧️", snow: "❄️", storm: "⛈️" };
+
+function wxGroup(code) {
+    if (code === 0) return "clear";
+    if (code <= 2) return "partly";
+    if (code === 3) return "cloudy";
+    if (code <= 48) return "fog";
+    if (code <= 57) return "drizzle";
+    if (code <= 67) return "rain";
+    if (code <= 77) return "snow";
+    if (code <= 82) return "rain";
+    if (code <= 86) return "snow";
+    return "storm";
+}
+
+function loadWeather() {
+    if (WX.promise) return WX.promise;
+
+    /* Cache di 30 minuti: evita richieste a ogni cambio pagina */
+    try {
+        const cached = JSON.parse(sessionStorage.getItem(WX.cacheKey) || "null");
+        if (cached && Date.now() - cached.time < WX.maxAge) {
+            WX.promise = Promise.resolve(cached.data);
+            return WX.promise;
+        }
+    } catch (e) { /* ignora */ }
+
+    const url = "https://api.open-meteo.com/v1/forecast" +
+        "?latitude=" + CONFIG.lat + "&longitude=" + CONFIG.lon +
+        "&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,is_day" +
+        "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max" +
+        "&timezone=Europe%2FRome&forecast_days=4";
+
+    WX.promise = fetch(url)
+        .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then((data) => {
+            try { sessionStorage.setItem(WX.cacheKey, JSON.stringify({ time: Date.now(), data })); } catch (e) {}
+            return data;
+        })
+        .catch((err) => { WX.promise = null; throw err; });
+
+    return WX.promise;
+}
+
+function dayLabel(dateStr, i) {
+    if (i === 0) return tr("wx.today");
+    const locale = lang === "zh" ? "zh-CN" : lang;
+    return new Date(dateStr + "T12:00:00").toLocaleDateString(locale, { weekday: "short" });
+}
+
+function fillWeather(box, d) {
+    const c = d.current;
+    const g = wxGroup(c.weather_code);
+    const icon = g === "clear" && !c.is_day ? "🌙" : WX_ICON[g];
+
+    box.replaceChildren(
+        h("h2", { class: "wx-title" }, tr("wx.title")),
+        h("div", { class: "wx-now" },
+            h("span", { class: "wx-icon" }, icon),
+            h("div", null,
+                h("div", { class: "wx-temp" }, Math.round(c.temperature_2m) + "°C"),
+                h("div", { class: "wx-desc" }, tr("wx.c." + g)))),
+        h("div", { class: "wx-meta" },
+            h("span", null, "🌡️ " + tr("wx.feels") + " " + Math.round(c.apparent_temperature) + "°"),
+            h("span", null, "💧 " + tr("wx.hum") + " " + c.relative_humidity_2m + "%"),
+            h("span", null, "💨 " + tr("wx.wind") + " " + Math.round(c.wind_speed_10m) + " km/h")),
+        h("div", { class: "wx-days" },
+            d.daily.time.map((t, i) => h("div", { class: "wx-day" },
+                h("span", { class: "wx-dname" }, dayLabel(t, i)),
+                h("span", { class: "wx-dicon" }, WX_ICON[wxGroup(d.daily.weather_code[i])]),
+                h("span", { class: "wx-range" },
+                    Math.round(d.daily.temperature_2m_max[i]) + "° / " +
+                    Math.round(d.daily.temperature_2m_min[i]) + "°"),
+                h("span", { class: "wx-rain" }, "☔ " + (d.daily.precipitation_probability_max[i] ?? 0) + "%"))))
+    );
+}
+
+function weatherWidget() {
+    const box = h("section", { class: "weather", id: "weather", "aria-live": "polite" });
+
+    if (WX.data) {
+        fillWeather(box, WX.data);           // cambio lingua: dati già pronti
+        return box;
+    }
+
+    box.append(h("p", { class: "muted" }, "⏳ " + tr("wx.loading")));
+
+    loadWeather()
+        .then((data) => {
+            WX.data = data;
+            const current = document.getElementById("weather");
+            if (current) fillWeather(current, data);
+        })
+        .catch(() => {
+            const current = document.getElementById("weather");
+            if (current) current.replaceChildren(h("p", { class: "muted" }, "🌥️ " + tr("wx.error")));
+        });
+
+    return box;
+}
+
+/* ---------- Barra meteo sottile (tutte le pagine) ---------- */
+
+function fillWeatherBar(bar, d) {
+    const c = d.current;
+    const g = wxGroup(c.weather_code);
+    const icon = g === "clear" && !c.is_day ? "🌙" : WX_ICON[g];
+
+    bar.replaceChildren(
+        h("div", { class: "wxbar-inner" },
+            h("span", { class: "wxbar-place" }, "📍 " + tr("wx.title")),
+            h("span", { class: "wxbar-now" },
+                h("span", { class: "wxbar-icon" }, icon),
+                h("strong", null, Math.round(c.temperature_2m) + "°C"),
+                h("span", null, tr("wx.c." + g))),
+            h("span", { class: "wxbar-item", title: tr("wx.feels") },
+                "🌡️ " + Math.round(c.apparent_temperature) + "°"),
+            h("span", { class: "wxbar-item", title: tr("wx.hum") },
+                "💧 " + c.relative_humidity_2m + "%"),
+            h("span", { class: "wxbar-item", title: tr("wx.wind") },
+                "💨 " + Math.round(c.wind_speed_10m) + " km/h"),
+            h("span", { class: "wxbar-days" },
+                d.daily.time.slice(1).map((t, i) => {
+                    const n = i + 1;
+                    return h("span", { class: "wxbar-day" },
+                        dayLabel(t, n) + " " +
+                        WX_ICON[wxGroup(d.daily.weather_code[n])] + " " +
+                        Math.round(d.daily.temperature_2m_max[n]) + "° / " +
+                        Math.round(d.daily.temperature_2m_min[n]) + "°");
+                })))
+    );
+}
+
+function weatherBar() {
+    const bar = h("section", {
+        class: "wxbar", id: "wxbar",
+        "aria-label": tr("wx.title"), "aria-live": "polite"
+    });
+
+    if (WX.data) {                       // dati già in memoria: nessuna attesa
+        fillWeatherBar(bar, WX.data);
+        return bar;
+    }
+
+    bar.append(h("div", { class: "wxbar-inner" }, "⏳ " + tr("wx.loading")));
+
+    loadWeather()
+        .then((data) => {
+            WX.data = data;
+            const el = document.getElementById("wxbar");
+            if (el) fillWeatherBar(el, data);
+        })
+        .catch(() => {
+            const el = document.getElementById("wxbar");
+            if (el) el.remove();         // nessun meteo: la barra sparisce
+        });
+
+    return bar;
+}
+
+
+/* ---------- 6. CONTENUTO DELLE PAGINE ---------- */
 
 const RENDER = {
 
@@ -560,10 +808,12 @@ const RENDER = {
         }
         return [
             h("p", { class: "intro" }, tr("ui.intro")),
+             //weatherWidget(),
             h("nav", { class: "dashboard" },
                 PAGES.slice(1).map((p) =>
                     h("a", { class: "tile", href: p.file },
-                        h("span", { class: "tile-icon" }, p.icon),
+                        //h("span", { class: "tile-icon" }, p.icon),
+                        iconEl(p.icon, "tile-icon", p.emoji),
                         h("span", null, tr("p." + p.id + ".0"))))),
             h("h2", { class: "section-title" }, tr("ui.gallery")),
             gallery
@@ -623,6 +873,7 @@ const RENDER = {
                href: nearHome("parcheggio custodito"), label: tr("ui.maps") })
     ])],
 
+    /*
     attractions: () => [grid([
         ["🏛️", "mole", "Mole Antonelliana, Torino"],
         ["🏺", "egizio", "Museo Egizio, Torino"],
@@ -633,6 +884,21 @@ const RENDER = {
     ].map(([icon, key, q]) => card({
         icon, title: tr("attr." + key + ".0"), text: tr("attr." + key + ".1"),
         href: mapsSearch(q), label: tr("ui.maps") })))],
+    */
+    attractions: () => [grid([
+        ["images/icons/mole.png",      "🏛️", "mole",      "Mole Antonelliana, Torino"],
+        ["images/icons/egizio.png",    "🏺", "egizio",    "Museo Egizio, Torino"],
+        ["images/icons/palazzo.png",   "👑", "palazzo",   "Palazzo Reale, Torino"],
+        ["images/icons/valentino.png", "🌳", "valentino", "Parco del Valentino, Torino"],
+        ["images/icons/venaria.png",   "🏰", "venaria",   "Reggia di Venaria Reale"],
+        ["images/icons/stadium.png",   "⚽", "stadium",   "Allianz Stadium, Torino"]
+    ].map(([icon, fallback, key, q]) => card({
+        icon, fallback,
+        title: tr("attr." + key + ".0"),
+        text: tr("attr." + key + ".1"),
+        href: mapsSearch(q),
+        label: tr("ui.maps")
+    })))],
 
     restaurants: () => [grid([
         ["☕", "breakfast", "bar colazione pasticceria"],
@@ -695,16 +961,20 @@ function render() {
 
     const header = h("header", { class: "topbar" },
         h("a", { class: "brand", href: "index.html" },
-            h("span", { class: "brand-icon" }, "🏠"),
+            //h("span", { class: "brand-icon" }, "🏠"),
+            iconEl("images/icons/logo.png", "brand-icon", "🏠"),
             h("span", { class: "brand-name" }, CONFIG.name)),
         languageBar());
 
     const hero = h("section", { class: "hero" + (isHome ? " hero-home" : "") },
         h("div", { class: "hero-inner" },
-            h("span", { class: "hero-icon" }, page.icon),
+            //h("span", { class: "hero-icon" }, page.icon),
+            iconEl(page.icon, "hero-icon", page.emoji),
             h("h1", null, title),
             h("p", null, isHome ? CONFIG.name + " · " + tr("p.home.1") : tr("p." + page.id + ".1"))));
     hero.style.setProperty("--hero", "url('images/hero-" + page.id + ".jpg')");
+
+    const wxBar = weatherBar();
 
     /* CORREZIONE 1: esegue la funzione della pagina corrente */
     const content = RENDER[page.id] ? RENDER[page.id]() : [];
@@ -727,7 +997,7 @@ function render() {
     const toast = h("div", { class: "toast", id: "toast", role: "status", "aria-live": "polite" });
 
     document.getElementById("app").replaceChildren(
-        ...[header, hero, main, pager, footer, waFloat, toast].filter(Boolean));
+        ...[header, hero, wxBar, main, pager, footer, waFloat, toast].filter(Boolean));
 }
 /* ---------- 7. FUNZIONI INTERATTIVE ---------- */
 
