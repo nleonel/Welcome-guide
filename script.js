@@ -12,7 +12,8 @@ const CONFIG = {
     whatsapp: "393294572379",   // solo cifre, es. 393331234567
     wifiSsid: "LUX-HOSTEL-BNB",
     wifiPassword: "60671393",
-    checkinTime: "16:00",
+    checkinTime_start: "16:00",
+    checkinTime_end: "22:00",
     checkoutTime: "10:00",
     reviewUrl: "https://g.page/r/CS7gSEFVlZXQEAE/review",
     galleryCount: 5,
@@ -75,7 +76,7 @@ const T = {
         p: {
             home: ["Benvenuti", "La vostra casa a Torino"],
             wifi: ["Wi-Fi", "Connessione veloce in tutto l'appartamento"],
-            checkin: ["Check-in", "Come entrare nell'appartamento"],
+            checkin: ["Self Check-in", "Come entrare nell'appartamento"],
             checkout: ["Check-out", "Prima di partire"],
             rules: ["Regole della casa", "Per un soggiorno sereno per tutti"],
             directions: ["Come arrivare", "Via Crevacuore 45, Torino"],
@@ -88,12 +89,17 @@ const T = {
         },
         wifiQr: "Inquadrate il QR code con la fotocamera per connettervi automaticamente.",
         checkin: {
-            time: "Check-in dalle",
+            start_label: "Check-in dalle",
+            end_label  : "alle",
+            checkInfos : " Self check-in disponibile",
             steps: ["Raggiungete Via Crevacuore 45, Torino.",
+                    "Appena arrivati all’indirizzo suonare al nome « Casa Leonel» il portone si aprirà",
+                    "L’appartamento si trova al 4º piano porta n°10",
                     "Individuate la cassetta delle chiavi (vedi foto).",
                     "Inserite il codice che vi abbiamo inviato.",
                     "Aprite lo sportello e prendete le chiavi.",
-                    "Richiudete la cassetta e mescolate le cifre del codice."],
+                    "Richiudete la cassetta.",
+                "Il vostro mazzo di chiavi composto da : Chiave per la porta blindata - chiave per il portone giù - chiave per la Camera "],
             note: "Il codice della cassetta vi verrà inviato su WhatsApp prima dell'arrivo.",
             photo: "Cassetta chiavi"
         },
@@ -161,7 +167,9 @@ const T = {
         },
         wifiQr: "Scan the QR code with your camera to connect automatically.",
         checkin: {
-            time: "Check-in from",
+            start_label: "Check-in from",
+            end_label  : "to",
+            checkInfos : " ",
             steps: ["Go to Via Crevacuore 45, Turin.", "Find the key safe (see photo).",
                     "Enter the code we sent you.", "Open the key safe and take the keys.",
                     "Close the key safe and scramble the code."],
@@ -230,7 +238,9 @@ const T = {
         },
         wifiQr: "Scannez le QR code avec l'appareil photo pour vous connecter automatiquement.",
         checkin: {
-            time: "Arrivée à partir de",
+            start_label: "Arrivée à partir de",
+            end_label  : "a",
+            checkInfos : " ",
             steps: ["Rendez-vous Via Crevacuore 45, Turin.", "Trouvez la boîte à clés (voir photo).",
                     "Saisissez le code que nous vous avons envoyé.", "Ouvrez la boîte et prenez les clés.",
                     "Refermez la boîte et brouillez le code."],
@@ -298,7 +308,9 @@ const T = {
         },
         wifiQr: "Scannen Sie den QR-Code mit der Kamera, um sich automatisch zu verbinden.",
         checkin: {
-            time: "Check-in ab",
+            start_label: "Check-in ab",
+            end_label  : "bis",
+            checkInfos : " ",
             steps: ["Gehen Sie zur Via Crevacuore 45, Turin.", "Suchen Sie den Schlüsselsafe (siehe Foto).",
                     "Geben Sie den Code ein, den wir Ihnen geschickt haben.", "Öffnen Sie den Safe und nehmen Sie die Schlüssel.",
                     "Schließen Sie den Safe und verstellen Sie den Code."],
@@ -367,7 +379,9 @@ const T = {
         },
         wifiQr: "Escanee el código QR con la cámara para conectarse automáticamente.",
         checkin: {
-            time: "Check-in a partir de las",
+            start_label: "Check-in a partir de las",
+            end_label  : "hasta",
+            checkInfos : " ",
             steps: ["Diríjase a Via Crevacuore 45, Turín.", "Localice la caja de las llaves (ver foto).",
                     "Introduzca el código que le hemos enviado.", "Abra la caja y tome las llaves.",
                     "Cierre la caja y desordene el código."],
@@ -435,7 +449,9 @@ const T = {
         },
         wifiQr: "用手机相机扫描二维码即可自动连接。",
         checkin: {
-            time: "入住时间：自",
+             start_label: "入住时间：自",
+            end_label  : "至",
+            checkInfos : " ",
             steps: ["前往都灵 Via Crevacuore 45。", "找到钥匙密码盒（见照片）。", "输入我们发送给您的密码。",
                     "打开密码盒并取出钥匙。", "关上密码盒并打乱密码。"],
             note: "我们会在您到达前通过 WhatsApp 发送密码盒密码。",
@@ -624,8 +640,14 @@ const grid = (items) => h("div", { class: "grid" }, items);
 const list = (items, cls = "checklist") =>
     h(cls === "steps" ? "ol" : "ul", { class: cls }, items.map((i) => h("li", null, i)));
 
-const badge = (label, time) =>
-    h("div", { class: "time-badge" }, label + " ", h("strong", null, time));
+const checkInBadge = (start_label, end_label,start_time, end_time) =>
+    h("div", { class: "time-badge" }, start_label  + " ", h("strong", null, start_time), " "+ end_label + " ",  h("strong", null, end_time));
+
+const checkInfos = (text) =>
+    h("div", { class: "time-badge" },text + " ");
+
+const checkOutBadge = (label, time) =>
+     h("div", { class: "time-badge" }, label  + " ", h("strong", null, time));
 
 /* ---------- 5. CONTENUTO DELLE PAGINE ---------- */
 
@@ -836,7 +858,8 @@ const RENDER = {
             safeImg("images/keybox.jpg", tr("checkin.photo"), null, () => figure),
             h("figcaption", null, tr("checkin.photo")));
         return [
-            badge(tr("checkin.time"), CONFIG.checkinTime),
+            checkInBadge(tr("checkin.start_label"),tr("checkin.end_label"),CONFIG.checkinTime_start, CONFIG.checkinTime_end),
+            checkInfos(tr("checkin.checkInfos")),
             h("div", { class: "split" },
                 h("article", { class: "card" },
                     list(tr("checkin.steps"), "steps"),
@@ -846,7 +869,7 @@ const RENDER = {
     },
 
     checkout: () => [
-        badge(tr("checkout.time"), CONFIG.checkoutTime),
+        checkOutBadge(tr("checkout.time"), CONFIG.checkoutTime),
         h("article", { class: "card" }, list(tr("checkout.items")))
     ],
 
