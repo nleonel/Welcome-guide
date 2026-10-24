@@ -727,3 +727,70 @@ a { color: inherit; }
     .wxbar-place,
     .wxbar-days { display: none; }
 }
+
+/* =====================================================
+   Card ristoranti
+===================================================== */
+
+.rgrid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+
+.rcard { padding: 0; overflow: hidden; gap: 0; }
+
+.rcard-media {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    background: #eee;
+}
+
+.rcard-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.rcard-noimg {
+    display: grid;
+    place-items: center;
+    font-size: 3rem;
+}
+
+.rcard-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .95);
+    font-size: .8rem;
+    font-weight: 700;
+}
+
+.rcard-body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+    padding: 20px;
+}
+
+.rcard-rating {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.rcard-stars { color: #ffb400; letter-spacing: 2px; }
+
+.rcard-info {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 6px 12px;
+    margin: 4px 0 8px;
+    font-size: .92rem;
+}
+
+.rcard-info dt { color: var(--muted); }
+.rcard-info dd { font-weight: 600; }
+
+.rcard .btn { align-self: stretch; margin-top: auto; }

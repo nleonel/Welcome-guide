@@ -19,9 +19,66 @@ const CONFIG = {
     galleryCount: 5,
     defaultLang: "it",
     storageKey: "guestLanguage",
-    lat: 45.0703,   // latitudine (sostituisci con quella esatta)
-    lon: 7.6869    // longitudine
+    lat: 45.081118,   // latitudine (sostituisci con quella esatta)
+    lon: 7.633269   // longitudine
 };
+
+/* ---------- RISTORANTI (compila con i dati di Google Maps) ---------- */
+
+const MIN_RATING = 4.6;   // i ristoranti con voto più basso non vengono mostrati
+
+const RESTAURANTS = [
+    {
+        name: "NOME_RISTORANTE_1",
+        category: "breakfast",              // breakfast | pizza | restaurant | aperitivo
+        rating: 4.7,                        // voto Google
+        reviews: 850,                       // numero recensioni (facoltativo)
+        price: "€",                         // €, €€, €€€ oppure "10–20 €"
+        photo: "images/restaurants/ristorante1.jpg",
+        address: "INDIRIZZO_1, Torino",
+        hours: {
+            it: "Lun–Sab 7:00–19:00 · Dom chiuso",
+            en: "Mon–Sat 7:00 AM–7:00 PM · Sun closed"
+        },
+        desc: {
+            it: "Breve descrizione in italiano.",
+            en: "Short description in English."
+        }
+    },
+    {
+        name: "NOME_RISTORANTE_2",
+        category: "pizza",
+        rating: 4.6,
+        reviews: 1200,
+        price: "€€",
+        photo: "images/restaurants/ristorante2.jpg",
+        address: "INDIRIZZO_2, Torino",
+        hours: { it: "Mar–Dom 19:00–23:30 · Lun chiuso" },
+        desc: { it: "Breve descrizione in italiano." }
+    },
+    {
+        name: "NOME_RISTORANTE_3",
+        category: "restaurant",
+        rating: 4.8,
+        reviews: 430,
+        price: "€€€",
+        photo: "images/restaurants/ristorante3.jpg",
+        address: "INDIRIZZO_3, Torino",
+        hours: { it: "Lun–Sab 12:00–14:30, 19:30–22:30" },
+        desc: { it: "Breve descrizione in italiano." }
+    },
+    {
+        name: "NOME_RISTORANTE_4",
+        category: "aperitivo",
+        rating: 4.6,
+        reviews: 600,
+        price: "€€",
+        photo: "images/restaurants/ristorante4.jpg",
+        address: "INDIRIZZO_4, Torino",
+        hours: { it: "Tutti i giorni 18:00–01:00" },
+        desc: { it: "Breve descrizione in italiano." }
+    }
+];
 
 const LANGS = [
     { code: "it", flag: "it", emoji: "🇮🇹", label: "Italiano" },
@@ -62,7 +119,8 @@ const PAGES = [
     { id: "restaurants",  file: "ristoranti.html",    icon: "images/icons/restaurants.png",  emoji: "🍽️" },
     { id: "supermarkets", file: "supermercati.html",  icon: "images/icons/supermarkets.png", emoji: "🛒" },
     { id: "emergency",    file: "emergenze.html",     icon: "images/icons/emergency.png",    emoji: "🚑" },
-    { id: "review",       file: "review.html",        icon: "images/icons/review.png",       emoji: "⭐" }
+    { id: "review",       file: "review.html",        icon: "images/icons/review.png",       emoji: "⭐" },
+    { id: "ascensore",    file: "ascensore.html",     icon: "images/icons/ascensore.png",    emoji: "🛗" }
 ];
 
 /* ---------- 2. TRADUZIONI (se manca una voce si usa l'italiano) ---------- */
@@ -85,7 +143,8 @@ const T = {
             restaurants: ["Ristoranti", "Mangiare bene vicino a casa"],
             supermarkets: ["Supermercati", "La spesa vicino a casa"],
             emergency: ["Emergenze", "Numeri utili"],
-            review: ["Recensione", "Vi è piaciuto il soggiorno?"]
+            review: ["Recensione", "Vi è piaciuto il soggiorno?"],
+            ascensore: ["Ascensore", "Usa Il tuo Ascensore con cura"]
         },
         wifiQr: "Inquadrate il QR code con la fotocamera per connettervi automaticamente.",
         checkin: {
@@ -148,7 +207,9 @@ const T = {
         em: { n112: "Numero unico di emergenza", n113: "Polizia", n115: "Vigili del fuoco", n118: "Emergenza sanitaria",
               hospital: ["Ospedale", "Pronto soccorso più vicino."], pharmacy: ["Farmacia", "Farmacia più vicina."] },
         review: { text: "La vostra opinione è preziosa per noi e per i futuri ospiti. Bastano pochi secondi!",
-                  button: "Lascia una recensione su Google" }
+                  button: "Lascia una recensione su Google" },
+        ascensore: { text: "Il palazzo di Via Crevacuore 45, dove si trova il vostro appartamento è predisposto di un nuovo Ascensore con i lavori in corso",
+            button : "Ascensore Non Disponibile!" }
     },
 
     en: {
@@ -167,7 +228,8 @@ const T = {
             restaurants: ["Restaurants", "Eat well close to home"],
             supermarkets: ["Supermarkets", "Groceries near home"],
             emergency: ["Emergencies", "Useful numbers"],
-            review: ["Review", "Did you enjoy your stay?"]
+            review: ["Review", "Did you enjoy your stay?"],
+            ascensore: ["Elevator", "Use your elevator with care"]
         },
         wifiQr: "Scan the QR code with your camera to connect automatically.",
         checkin: {
@@ -228,7 +290,9 @@ const T = {
         em: { n112: "Single emergency number", n113: "Police", n115: "Fire brigade", n118: "Medical emergency",
               hospital: ["Hospital", "Nearest emergency room."], pharmacy: ["Pharmacy", "Nearest pharmacy."] },
         review: { text: "Your feedback means a lot to us and to future guests. It only takes a few seconds!",
-                  button: "Leave a Google review" }
+                  button: "Leave a Google review" },
+        ascensore: {  text: "The building at Via Crevacuore 45, where your apartment is located, is being fitted with a new elevator; work is currently underway.",
+            button : "Elevator Unavailable!" }
     },
 
     fr: {
@@ -247,7 +311,8 @@ const T = {
             restaurants: ["Restaurants", "Bien manger près de chez vous"],
             supermarkets: ["Supermarchés", "Courses près de chez vous"],
             emergency: ["Urgences", "Numéros utiles"],
-            review: ["Avis", "Vous avez aimé votre séjour ?"]
+            review: ["Avis", "Vous avez aimé votre séjour ?"],
+            ascensore: ["Ascenseur","Utilisez votre ascenseur avec précaution"]
         },
         wifiQr: "Scannez le QR code avec l'appareil photo pour vous connecter automatiquement.",
         checkin: {
@@ -308,7 +373,9 @@ const T = {
         em: { n112: "Numéro d'urgence unique", n113: "Police", n115: "Pompiers", n118: "Urgence médicale",
               hospital: ["Hôpital", "Service des urgences le plus proche."], pharmacy: ["Pharmacie", "Pharmacie la plus proche."] },
         review: { text: "Votre avis compte beaucoup pour nous et pour les futurs voyageurs. Cela ne prend que quelques secondes !",
-                  button: "Laisser un avis Google" }
+                  button: "Laisser un avis Google" },
+        ascensore: { text: "L'immeuble situé au 45, Via Crevacuore, où se trouve votre appartement, est équipé d'un nouvel ascenseur. Des travaux sont en cours.",
+            button : "Ascenseur indisponible !" }
     },
 
     de: {
@@ -327,7 +394,8 @@ const T = {
             restaurants: ["Restaurants", "Gut essen in der Nähe"],
             supermarkets: ["Supermärkte", "Einkaufen in der Nähe"],
             emergency: ["Notfälle", "Wichtige Nummern"],
-            review: ["Bewertung", "Hat Ihnen der Aufenthalt gefallen?"]
+            review: ["Bewertung", "Hat Ihnen der Aufenthalt gefallen?"],
+            ascensore: ["Aufzug", "Benutzen Sie Ihren Aufzug sorgsam"]
         },
         wifiQr: "Scannen Sie den QR-Code mit der Kamera, um sich automatisch zu verbinden.",
         checkin: {
@@ -388,7 +456,9 @@ const T = {
         em: { n112: "Europäischer Notruf", n113: "Polizei", n115: "Feuerwehr", n118: "Medizinischer Notfall",
               hospital: ["Krankenhaus", "Nächste Notaufnahme."], pharmacy: ["Apotheke", "Nächste Apotheke."] },
         review: { text: "Ihre Meinung ist uns und zukünftigen Gästen sehr wichtig. Es dauert nur wenige Sekunden!",
-                  button: "Google-Bewertung schreiben" }
+                  button: "Google-Bewertung schreiben" },
+        ascensore: { text: "Das Gebäude in der Via Crevacuore 45, in dem sich Ihre Wohnung befindet, wird mit einem neuen Aufzug ausgestattet; die Arbeiten sind derzeit im Gange.",
+            button : "Aufzug außer Betrieb!" }
     },
 
     es: {
@@ -407,7 +477,8 @@ const T = {
             restaurants: ["Restaurantes", "Comer bien cerca de casa"],
             supermarkets: ["Supermercados", "Compras cerca de casa"],
             emergency: ["Emergencias", "Números útiles"],
-            review: ["Reseña", "¿Le ha gustado su estancia?"]
+            review: ["Reseña", "¿Le ha gustado su estancia?"],
+            ascensore: ["Ascensor", "Utilice el ascensor con cuidado"]
         },
         wifiQr: "Escanee el código QR con la cámara para conectarse automáticamente.",
         checkin: {
@@ -467,7 +538,9 @@ const T = {
         em: { n112: "Número único de emergencias", n113: "Policía", n115: "Bomberos", n118: "Emergencia médica",
               hospital: ["Hospital", "Urgencias más cercanas."], pharmacy: ["Farmacia", "Farmacia más cercana."] },
         review: { text: "Su opinión es muy valiosa para nosotros y para los futuros huéspedes. ¡Solo le llevará unos segundos!",
-                  button: "Dejar una reseña en Google" }
+                  button: "Dejar una reseña en Google" },
+        ascensore: { text: "El edificio situado en Via Crevacuore 45, donde se encuentra su apartamento, está equipado con un nuevo ascensor cuyas obras están en curso.",
+            button : "¡Ascensor no disponible!" }
     },
 
     zh: {
@@ -486,7 +559,8 @@ const T = {
             restaurants: ["餐厅", "附近美食"],
             supermarkets: ["超市", "附近购物"],
             emergency: ["紧急情况", "常用电话"],
-            review: ["评价", "您喜欢这次住宿吗？"]
+            review: ["评价", "您喜欢这次住宿吗？"],
+            ascensore: ["電梯", "請小心使用電梯"]
         },
         wifiQr: "用手机相机扫描二维码即可自动连接。",
         checkin: {
@@ -543,9 +617,22 @@ const T = {
         shop: "查找离公寓最近的门店。",
         em: { n112: "欧洲统一紧急电话", n113: "警察", n115: "消防", n118: "医疗急救",
               hospital: ["医院", "最近的急诊室。"], pharmacy: ["药店", "最近的药店。"] },
-        review: { text: "您的评价对我们和未来的住客都非常重要，只需几秒钟！", button: "在 Google 上留下评价" }
+        review: { text: "您的评价对我们和未来的住客都非常重要，只需几秒钟！", button: "在 Google 上留下评价" },
+        ascensore: { text: "您的公寓所在的 Via Crevacuore 45 號大樓配備了一部正在施工的新電梯。",
+            button : "電梯不可用！" }
     }
 };
+
+/* ---------- Etichette scheda ristoranti ---------- */
+const RC_TEXT = {
+    it: { reviews: "recensioni", price: "Prezzo medio", hours: "Orari", go: "Indicazioni in Google Maps", none: "Nessun ristorante disponibile." },
+    en: { reviews: "reviews", price: "Average price", hours: "Opening hours", go: "Directions in Google Maps", none: "No restaurants available." },
+    fr: { reviews: "avis", price: "Prix moyen", hours: "Horaires", go: "Itinéraire dans Google Maps", none: "Aucun restaurant disponible." },
+    de: { reviews: "Bewertungen", price: "Durchschnittspreis", hours: "Öffnungszeiten", go: "Route in Google Maps", none: "Keine Restaurants verfügbar." },
+    es: { reviews: "reseñas", price: "Precio medio", hours: "Horario", go: "Cómo llegar en Google Maps", none: "No hay restaurantes disponibles." },
+    zh: { reviews: "条评价", price: "人均价格", hours: "营业时间", go: "在 Google 地图中导航", none: "暂无餐厅信息。" }
+};
+Object.keys(RC_TEXT).forEach((code) => { if (T[code]) T[code].rc = RC_TEXT[code]; });
 
 /* ---------- Traduzioni widget meteo ---------- */
 const WX_TEXT = {
@@ -870,6 +957,53 @@ function weatherBar() {
 
 /* ---------- 6. CONTENUTO DELLE PAGINE ---------- */
 
+/* ---------- Card ristorante ---------- */
+
+/* Testo nella lingua attuale (oggetto {it, en, ...} oppure stringa) */
+function loc(value) {
+    if (!value || typeof value === "string") return value || "";
+    return value[lang] || value.en || value[CONFIG.defaultLang] || "";
+}
+
+function starBar(rating) {
+    const full = Math.floor(rating);
+    const half = rating - full >= 0.5;
+    return "★".repeat(full) + (half ? "⯪" : "") + "☆".repeat(5 - full - (half ? 1 : 0));
+}
+
+const walkRoute = (destination) =>
+    "https://www.google.com/maps/dir/?api=1" +
+    "&origin=" + encodeURIComponent(CONFIG.address) +
+    "&destination=" + encodeURIComponent(destination) +
+    "&travelmode=walking";
+
+function restaurantCard(r) {
+    const media = h("div", { class: "rcard-media" });
+    const img = h("img", { src: r.photo, alt: r.name, loading: "lazy" });
+    img.addEventListener("error", () => {
+        img.remove();
+        media.classList.add("rcard-noimg");
+        media.textContent = "🍽️";
+    });
+    media.append(img,
+        h("span", { class: "rcard-badge" }, tr("food." + r.category + ".0")));
+
+    return h("article", { class: "card rcard" },
+        media,
+        h("div", { class: "rcard-body" },
+            h("h3", null, r.name),
+            h("div", { class: "rcard-rating" },
+                h("strong", null, r.rating.toFixed(1)),
+                h("span", { class: "rcard-stars", "aria-hidden": "true" }, starBar(r.rating)),
+                r.reviews && h("span", { class: "muted" }, "(" + r.reviews + " " + tr("rc.reviews") + ")")),
+            h("p", null, loc(r.desc)),
+            h("dl", { class: "rcard-info" },
+                h("dt", null, "💶 " + tr("rc.price")), h("dd", null, r.price),
+                h("dt", null, "🕒 " + tr("rc.hours")), h("dd", null, loc(r.hours))),
+            extLink(walkRoute(r.name + ", " + r.address), "📍 " + tr("rc.go")))
+    );
+}
+
 const RENDER = {
 
     home() {
@@ -974,14 +1108,16 @@ const RENDER = {
         label: tr("ui.maps")
     })))],
 
-    restaurants: () => [grid([
-        ["☕", "breakfast", "bar colazione pasticceria"],
-        ["🍕", "pizza", "pizzeria"],
-        ["🍝", "restaurant", "ristorante"],
-        ["🍹", "aperitivo", "aperitivo"]
-    ].map(([icon, key, q]) => card({
-        icon, title: tr("food." + key + ".0"), text: tr("food." + key + ".1"),
-        href: nearHome(q), label: tr("ui.maps") })))],
+       restaurants: () => {
+        const order = ["breakfast", "pizza", "restaurant", "aperitivo"];
+        const list = RESTAURANTS
+            .filter((r) => r.rating >= MIN_RATING)
+            .sort((a, b) => order.indexOf(a.category) - order.indexOf(b.category) || b.rating - a.rating);
+
+        return list.length
+            ? [h("div", { class: "grid rgrid" }, list.map(restaurantCard))]
+            : [h("p", { class: "muted" }, tr("rc.none"))];
+    },
 
     supermarkets: () => [grid(
         ["Esselunga", "Carrefour", "Lidl", "Conad"].map((brand) => card({
@@ -1001,7 +1137,13 @@ const RENDER = {
     review: () => [h("article", { class: "card card-center" },
         h("div", { class: "stars" }, "★★★★★"),
         h("p", null, tr("review.text")),
-        extLink(CONFIG.reviewUrl, "⭐ " + tr("review.button"), "btn btn-lg"))]
+        extLink(CONFIG.reviewUrl, "⭐ " + tr("review.button"), "btn btn-lg"))],
+    
+    ascensore: () => [h("article", { class: "card card-center" },
+        h("p", null, tr("ascensore.text")),
+        extLink(null, "🛗 " + tr("ascensore.button"), "btn btn-lg")
+         )]
+
 };
 
 /* ---------- 6. LAYOUT COMUNE ---------- */
