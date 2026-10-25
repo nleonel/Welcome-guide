@@ -794,3 +794,49 @@ a { color: inherit; }
 .rcard-info dd { font-weight: 600; }
 
 .rcard .btn { align-self: stretch; margin-top: auto; }
+
+.rcard-walk {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, .7);
+    color: #fff;
+    font-size: .8rem;
+    font-weight: 600;
+}
+
+.rcard-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: auto;
+}
+
+.rcard-actions .btn { flex: 1; }
+
+.btn-outline {
+    background: #fff;
+    color: var(--accent);
+    border: 2px solid var(--accent);
+}
+
+.btn-outline:hover { background: #fff0f3; }
+
+.rcard-travel {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.rcard-travel span {
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--bg);
+    font-size: .85rem;
+    font-weight: 600;
+}
+
+.rcard-info dd div { line-height: 1.5; }
+.rcard-days { color: var(--muted); font-weight: 500; }
+.rcard-closed { color: #d93025; font-weight: 600; }

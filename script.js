@@ -23,60 +23,203 @@ const CONFIG = {
     lon: 7.633269   // longitudine
 };
 
-/* ---------- RISTORANTI (compila con i dati di Google Maps) ---------- */
+/* ---------- RISTORANTI ---------- */
 
-const MIN_RATING = 4.6;   // i ristoranti con voto più basso non vengono mostrati
+const MIN_RATING = 4.4;
 
+/* hours: d = giorni (mon, tue, wed, thu, fri, sat, sun; "mon-sat" = intervallo)
+   closed: giorni di chiusura separati da virgola */
 const RESTAURANTS = [
     {
-        name: "NOME_RISTORANTE_1",
-        category: "breakfast",              // breakfast | pizza | restaurant | aperitivo
-        rating: 4.7,                        // voto Google
-        reviews: 850,                       // numero recensioni (facoltativo)
-        price: "€",                         // €, €€, €€€ oppure "10–20 €"
-        photo: "images/restaurants/ristorante1.jpg",
-        address: "INDIRIZZO_1, Torino",
-        hours: {
-            it: "Lun–Sab 7:00–19:00 · Dom chiuso",
-            en: "Mon–Sat 7:00 AM–7:00 PM · Sun closed"
-        },
+        name: "ASD Bocciofila Tesoriera - Come a casa",
+        category: "restaurant",
+        rating: 4.6, reviews: 195, price: "10–20 €",
+        phone: "+390115692226", walkMin: 1, carMin: 2,
+        address: "Via Crevacuore, 60, 10146 Torino TO",
+        photo: "images/restaurants/bocciofila-tesoriera.jpg",
+        hours: [{ d: "tue-sun", t: "10:00–23:00" }], closed: "mon",
         desc: {
-            it: "Breve descrizione in italiano.",
-            en: "Short description in English."
+            it: "Cucina \"come a casa\" in una bocciofila di quartiere, proprio accanto all'appartamento.",
+            en: "Home-style cooking in a neighbourhood bocce club, right next to the apartment.",
+            fr: "Cuisine « comme à la maison » dans un club de boules de quartier, juste à côté de l'appartement.",
+            de: "Hausmannskost in einem Boccia-Club im Viertel, direkt neben der Wohnung.",
+            es: "Cocina casera en un club de petanca del barrio, justo al lado del apartamento.",
+            zh: "社区滚球俱乐部里的家常菜，就在公寓旁边。"
         }
     },
     {
-        name: "NOME_RISTORANTE_2",
-        category: "pizza",
-        rating: 4.6,
-        reviews: 1200,
-        price: "€€",
-        photo: "images/restaurants/ristorante2.jpg",
-        address: "INDIRIZZO_2, Torino",
-        hours: { it: "Mar–Dom 19:00–23:30 · Lun chiuso" },
-        desc: { it: "Breve descrizione in italiano." }
-    },
-    {
-        name: "NOME_RISTORANTE_3",
+        name: "Posto a tavola - Catering / Buffet / Chef a domicilio",
         category: "restaurant",
-        rating: 4.8,
-        reviews: 430,
-        price: "€€€",
-        photo: "images/restaurants/ristorante3.jpg",
-        address: "INDIRIZZO_3, Torino",
-        hours: { it: "Lun–Sab 12:00–14:30, 19:30–22:30" },
-        desc: { it: "Breve descrizione in italiano." }
+        rating: 4.9, reviews: 67, price: "30–40 €",
+        phone: "+393701565610", walkMin: 1, carMin: 1,
+        address: "Via Crevacuore, 50, 10146 Torino TO",
+        photo: "images/restaurants/posto-a-tavola.jpg",
+        hours: [{ d: "mon-sat", t: "09:30–00:00" }, { d: "sun", t: "11:30–00:00" }],
+        desc: {
+            it: "Catering, buffet e chef a domicilio: ideale per una cena speciale in appartamento.",
+            en: "Catering, buffets and private chef at home: perfect for a special dinner in the apartment.",
+            fr: "Traiteur, buffets et chef à domicile : idéal pour un dîner spécial dans l'appartement.",
+            de: "Catering, Buffets und Koch für zu Hause: ideal für ein besonderes Abendessen in der Wohnung.",
+            es: "Catering, bufé y chef a domicilio: ideal para una cena especial en el apartamento.",
+            zh: "提供餐饮外包、自助餐和上门厨师服务，适合在公寓里享用一顿特别的晚餐。"
+        }
     },
     {
-        name: "NOME_RISTORANTE_4",
-        category: "aperitivo",
-        rating: 4.6,
-        reviews: 600,
-        price: "€€",
-        photo: "images/restaurants/ristorante4.jpg",
-        address: "INDIRIZZO_4, Torino",
-        hours: { it: "Tutti i giorni 18:00–01:00" },
-        desc: { it: "Breve descrizione in italiano." }
+        name: "Pizzeria Da Rosso",
+        category: "pizza",
+        rating: 4.9, reviews: 57, price: "10–20 €",
+        phone: "+390110362125", walkMin: 4, carMin: 2,
+        address: "Via Salbertrand, 60, 10146 Torino TO",
+        photo: "images/restaurants/da-rosso.jpg",
+        hours: [{ d: "tue-sun", t: "18:30–22:30" }], closed: "mon",
+        desc: {
+            it: "Pizzeria di quartiere, la più vicina all'appartamento. Aperta a cena.",
+            en: "Neighbourhood pizzeria, the closest to the apartment. Open for dinner.",
+            fr: "Pizzeria de quartier, la plus proche de l'appartement. Ouverte le soir.",
+            de: "Pizzeria im Viertel, die nächste zur Wohnung. Abends geöffnet.",
+            es: "Pizzería de barrio, la más cercana al apartamento. Abierta para cenar.",
+            zh: "离公寓最近的社区披萨店，晚餐时段营业。"
+        }
+    },
+    {
+        name: "Pizzeria La Bufala",
+        category: "pizza",
+        rating: 4.9, reviews: 118, price: "10–20 €",
+        phone: "+393408325583", walkMin: 5, carMin: 4,
+        address: "Via Carlo Capelli, 36, 10146 Torino TO",
+        photo: "images/restaurants/la-bufala.jpg",
+        hours: [{ d: "tue-sun", t: "18:30–22:30" }], closed: "mon",
+        desc: {
+            it: "Pizzeria molto apprezzata dagli ospiti della zona, ideale per la cena.",
+            en: "Highly rated local pizzeria, ideal for dinner.",
+            fr: "Pizzeria très appréciée du quartier, idéale pour le dîner.",
+            de: "Sehr beliebte Pizzeria im Viertel, ideal zum Abendessen.",
+            es: "Pizzería muy valorada del barrio, ideal para cenar.",
+            zh: "评价很高的社区披萨店，非常适合晚餐。"
+        }
+    },
+    {
+        name: "Ristorante Il Tempo Ritrovato",
+        category: "restaurant",
+        rating: 4.4, reviews: 75, price: "30–40 €",
+        phone: "+39011747380", walkMin: 5, carMin: 2,
+        address: "Via Passo del Brennero, 2/E, 10146 Torino TO",
+        photo: "images/restaurants/tempo-ritrovato.jpg",
+        hours: [{ d: "mon-sun", t: "12:00–15:00 · 19:30–22:30" }],
+        desc: {
+            it: "Ristorante a pochi passi da casa, aperto a pranzo e cena tutti i giorni.",
+            en: "Restaurant just steps from the apartment, open for lunch and dinner every day.",
+            fr: "Restaurant à deux pas de l'appartement, ouvert midi et soir tous les jours.",
+            de: "Restaurant nur wenige Schritte entfernt, täglich mittags und abends geöffnet.",
+            es: "Restaurante a pocos pasos del apartamento, abierto a mediodía y por la noche todos los días.",
+            zh: "距公寓仅几步之遥的餐厅，每天供应午餐和晚餐。"
+        }
+    },
+    {
+        name: "La Piola Dell'Angolo",
+        category: "restaurant",
+        rating: 4.4, reviews: 465, price: "10–20 €",
+        phone: "+393381831459", walkMin: 8, carMin: 3,
+        address: "Via Valgioie, 32, 10146 Torino TO",
+        photo: "images/restaurants/piola-angolo.jpg",
+        hours: [{ d: "mon-sat", t: "09:00–15:00" }], closed: "sun",
+        desc: {
+            it: "Tipica piola piemontese per colazione e pranzo. Chiusa la sera.",
+            en: "Traditional Piedmontese \"piola\" for breakfast and lunch. Closed in the evening.",
+            fr: "« Piola » typique du Piémont pour le petit-déjeuner et le déjeuner. Fermée le soir.",
+            de: "Typische piemontesische „Piola“ für Frühstück und Mittagessen. Abends geschlossen.",
+            es: "Típica \"piola\" piamontesa para desayunar y comer. Cerrada por la noche.",
+            zh: "典型的皮埃蒙特小酒馆（Piola），供应早餐和午餐，晚上不营业。"
+        }
+    },
+    {
+        name: "Barbagnam",
+        category: "restaurant",
+        rating: 4.5, reviews: 238, price: "10–20 €",
+        phone: "+390119093016", walkMin: 10, carMin: 3,
+        address: "Via Valentino Carrera, 99, 10146 Torino TO",
+        photo: "images/restaurants/barbagnam.jpg",
+        hours: [{ d: "mon-sun", t: "12:00–14:30 · 18:30–22:30" }],
+        desc: {
+            it: "Locale informale e conveniente, aperto a pranzo e cena tutti i giorni.",
+            en: "Casual, good-value spot, open for lunch and dinner every day.",
+            fr: "Adresse décontractée et abordable, ouverte midi et soir tous les jours.",
+            de: "Ungezwungenes, preiswertes Lokal, täglich mittags und abends geöffnet.",
+            es: "Local informal y económico, abierto a mediodía y por la noche todos los días.",
+            zh: "休闲实惠的小馆，每天供应午餐和晚餐。"
+        }
+    },
+    {
+        name: "Trattoria da Moreno",
+        category: "restaurant",
+        rating: 4.5, reviews: 493, price: "10–20 €",
+        phone: "+390110209719", walkMin: 10, carMin: 3,
+        address: "Largo Nicola Fabrizi, 89/A, 10145 Torino TO",
+        photo: "images/restaurants/da-moreno.jpg",
+        hours: [{ d: "mon-sat", t: "12:00–14:30 · 19:00–22:00" }], closed: "sun",
+        desc: {
+            it: "Trattoria tradizionale, aperta a pranzo e cena.",
+            en: "Traditional trattoria, open for lunch and dinner.",
+            fr: "Trattoria traditionnelle, ouverte midi et soir.",
+            de: "Traditionelle Trattoria, mittags und abends geöffnet.",
+            es: "Trattoria tradicional, abierta a mediodía y por la noche.",
+            zh: "传统意式小餐馆，供应午餐和晚餐。"
+        }
+    },
+    {
+        name: "Interesting Cucina Cinese",
+        category: "restaurant",
+        rating: 4.9, reviews: 534, price: "10–20 €",
+        phone: "+390115693608", walkMin: 14, carMin: 5,
+        address: "C.so Francia, 227/A, 10146 Torino TO",
+        photo: "images/restaurants/interesting.jpg",
+        hours: [
+            { d: "mon", t: "12:00–15:00 · 18:45–22:30" },
+            { d: "wed-sun", t: "12:00–15:00 · 18:45–22:30" }
+        ],
+        closed: "tue",
+        desc: {
+            it: "Cucina cinese tra le più apprezzate della zona.",
+            en: "One of the most highly rated Chinese restaurants in the area.",
+            fr: "L'un des restaurants chinois les mieux notés du quartier.",
+            de: "Eines der am besten bewerteten chinesischen Restaurants der Gegend.",
+            es: "Uno de los restaurantes chinos mejor valorados de la zona.",
+            zh: "附近评价最高的中餐馆之一。"
+        }
+    },
+    {
+        name: "Antiche Sere",
+        category: "restaurant",
+        rating: 4.6, reviews: 1888, price: "30–40 €",
+        phone: "+390113854347", walkMin: 26, carMin: 8,
+        address: "Via Cenischia, 9, 10139 Torino TO",
+        photo: "images/restaurants/antiche-sere.jpg",
+        hours: [{ d: "mon-sat", t: "19:30–22:30" }], closed: "sun",
+        desc: {
+            it: "Ristorante molto amato dai torinesi, aperto solo a cena: meglio prenotare.",
+            en: "Much-loved by locals, open for dinner only: booking recommended.",
+            fr: "Très apprécié des Turinois, ouvert uniquement le soir : réservation conseillée.",
+            de: "Bei Einheimischen sehr beliebt, nur abends geöffnet: Reservierung empfohlen.",
+            es: "Muy querido por los turineses, abierto solo para cenar: se recomienda reservar.",
+            zh: "深受都灵本地人喜爱，仅供应晚餐，建议提前预订。"
+        }
+    },
+    {
+        name: "Il Ristovolante",
+        category: "restaurant",
+        rating: 4.5, reviews: 757, price: "30–40 €",
+        phone: "+393296258118", walkMin: 35, carMin: 7,
+        address: "Via Vigone, 49E, 10139 Torino TO",
+        photo: "images/restaurants/ristovolante.jpg",
+        hours: [{ d: "mon-sat", t: "18:30–23:30" }, { d: "sun", t: "12:00–15:00" }],
+        desc: {
+            it: "Ideale per una cena speciale. La domenica è aperto solo a pranzo.",
+            en: "Ideal for a special dinner. On Sundays it is open for lunch only.",
+            fr: "Idéal pour un dîner spécial. Le dimanche, ouvert uniquement le midi.",
+            de: "Ideal für ein besonderes Abendessen. Sonntags nur mittags geöffnet.",
+            es: "Ideal para una cena especial. Los domingos abre solo a mediodía.",
+            zh: "适合享用一顿特别的晚餐。周日仅供应午餐。"
+        }
     }
 ];
 
@@ -625,12 +768,24 @@ const T = {
 
 /* ---------- Etichette scheda ristoranti ---------- */
 const RC_TEXT = {
-    it: { reviews: "recensioni", price: "Prezzo medio", hours: "Orari", go: "Indicazioni in Google Maps", none: "Nessun ristorante disponibile." },
-    en: { reviews: "reviews", price: "Average price", hours: "Opening hours", go: "Directions in Google Maps", none: "No restaurants available." },
-    fr: { reviews: "avis", price: "Prix moyen", hours: "Horaires", go: "Itinéraire dans Google Maps", none: "Aucun restaurant disponible." },
-    de: { reviews: "Bewertungen", price: "Durchschnittspreis", hours: "Öffnungszeiten", go: "Route in Google Maps", none: "Keine Restaurants verfügbar." },
-    es: { reviews: "reseñas", price: "Precio medio", hours: "Horario", go: "Cómo llegar en Google Maps", none: "No hay restaurantes disponibles." },
-    zh: { reviews: "条评价", price: "人均价格", hours: "营业时间", go: "在 Google 地图中导航", none: "暂无餐厅信息。" }
+    it: { reviews: "recensioni", price: "Prezzo medio", hours: "Orari", go: "Indicazioni", call: "Chiama",
+          walk: "a piedi", car: "in auto", closed: "Chiuso", daily: "Tutti i giorni",
+          none: "Nessun ristorante disponibile." },
+    en: { reviews: "reviews", price: "Average price", hours: "Opening hours", go: "Directions", call: "Call",
+          walk: "walk", car: "by car", closed: "Closed", daily: "Every day",
+          none: "No restaurants available." },
+    fr: { reviews: "avis", price: "Prix moyen", hours: "Horaires", go: "Itinéraire", call: "Appeler",
+          walk: "à pied", car: "en voiture", closed: "Fermé", daily: "Tous les jours",
+          none: "Aucun restaurant disponible." },
+    de: { reviews: "Bewertungen", price: "Durchschnittspreis", hours: "Öffnungszeiten", go: "Route", call: "Anrufen",
+          walk: "zu Fuß", car: "mit dem Auto", closed: "Geschlossen", daily: "Täglich",
+          none: "Keine Restaurants verfügbar." },
+    es: { reviews: "reseñas", price: "Precio medio", hours: "Horario", go: "Cómo llegar", call: "Llamar",
+          walk: "a pie", car: "en coche", closed: "Cerrado", daily: "Todos los días",
+          none: "No hay restaurantes disponibles." },
+    zh: { reviews: "条评价", price: "人均价格", hours: "营业时间", go: "导航", call: "拨打",
+          walk: "步行", car: "驾车", closed: "休息", daily: "每天",
+          none: "暂无餐厅信息。" }
 };
 Object.keys(RC_TEXT).forEach((code) => { if (T[code]) T[code].rc = RC_TEXT[code]; });
 
@@ -971,11 +1126,44 @@ function starBar(rating) {
     return "★".repeat(full) + (half ? "⯪" : "") + "☆".repeat(5 - full - (half ? 1 : 0));
 }
 
-const walkRoute = (destination) =>
+
+/* ---------- Orari tradotti automaticamente ---------- */
+
+const DAY_KEYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+
+function dayName(key) {
+    const i = DAY_KEYS.indexOf(key.trim());
+    if (i < 0) return key;
+    const locale = lang === "zh" ? "zh-CN" : lang;
+    const name = new Date(2024, 0, 1 + i)                // 1 gennaio 2024 = lunedì
+        .toLocaleDateString(locale, { weekday: "short" });
+    return name.charAt(0).toUpperCase() + name.slice(1);
+}
+
+function dayRange(d) {
+    if (d === "mon-sun") return tr("rc.daily");
+    return d.split("-").map(dayName).join("–");
+}
+
+function hoursLines(r) {
+    const lines = (r.hours || []).map((x) =>
+        h("div", null, h("span", { class: "rcard-days" }, dayRange(x.d) + ": "), x.t));
+    if (r.closed) {
+        lines.push(h("div", { class: "rcard-closed" },
+            tr("rc.closed") + ": " + r.closed.split(",").map(dayName).join(", ")));
+    }
+    return lines;
+}
+
+/* ---------- Percorso: a piedi se vicino, altrimenti in auto ---------- */
+
+const routeTo = (destination, mode) =>
     "https://www.google.com/maps/dir/?api=1" +
     "&origin=" + encodeURIComponent(CONFIG.address) +
     "&destination=" + encodeURIComponent(destination) +
-    "&travelmode=walking";
+    "&travelmode=" + mode;
+
+/* ---------- Card ristorante ---------- */
 
 function restaurantCard(r) {
     const media = h("div", { class: "rcard-media" });
@@ -985,22 +1173,28 @@ function restaurantCard(r) {
         media.classList.add("rcard-noimg");
         media.textContent = "🍽️";
     });
-    media.append(img,
-        h("span", { class: "rcard-badge" }, tr("food." + r.category + ".0")));
+    media.append(img, h("span", { class: "rcard-badge" }, tr("food." + r.category + ".0")));
+
+    const mode = r.walkMin && r.walkMin <= 15 ? "walking" : "driving";
 
     return h("article", { class: "card rcard" },
         media,
         h("div", { class: "rcard-body" },
             h("h3", null, r.name),
             h("div", { class: "rcard-rating" },
-                h("strong", null, r.rating.toFixed(1)),
+                h("strong", null, r.rating.toFixed(1).replace(".", lang === "en" || lang === "zh" ? "." : ",")),
                 h("span", { class: "rcard-stars", "aria-hidden": "true" }, starBar(r.rating)),
-                r.reviews && h("span", { class: "muted" }, "(" + r.reviews + " " + tr("rc.reviews") + ")")),
+                h("span", { class: "muted" }, "(" + r.reviews + " " + tr("rc.reviews") + ")")),
+            h("div", { class: "rcard-travel" },
+                h("span", null, "🚶 " + r.walkMin + " min " + tr("rc.walk")),
+                h("span", null, "🚗 " + r.carMin + " min " + tr("rc.car"))),
             h("p", null, loc(r.desc)),
             h("dl", { class: "rcard-info" },
                 h("dt", null, "💶 " + tr("rc.price")), h("dd", null, r.price),
-                h("dt", null, "🕒 " + tr("rc.hours")), h("dd", null, loc(r.hours))),
-            extLink(walkRoute(r.name + ", " + r.address), "📍 " + tr("rc.go")))
+                h("dt", null, "🕒 " + tr("rc.hours")), h("dd", null, hoursLines(r))),
+            h("div", { class: "rcard-actions" },
+                h("a", { class: "btn btn-outline", href: "tel:" + r.phone }, "📞 " + tr("rc.call")),
+                extLink(routeTo(r.name + ", " + r.address, mode), "📍 " + tr("rc.go"))))
     );
 }
 
@@ -1108,16 +1302,16 @@ const RENDER = {
         label: tr("ui.maps")
     })))],
 
-       restaurants: () => {
-        const order = ["breakfast", "pizza", "restaurant", "aperitivo"];
+    restaurants: () => {
         const list = RESTAURANTS
             .filter((r) => r.rating >= MIN_RATING)
-            .sort((a, b) => order.indexOf(a.category) - order.indexOf(b.category) || b.rating - a.rating);
+            .sort((a, b) => a.walkMin - b.walkMin);       // i più vicini per primi
 
         return list.length
             ? [h("div", { class: "grid rgrid" }, list.map(restaurantCard))]
             : [h("p", { class: "muted" }, tr("rc.none"))];
     },
+
 
     supermarkets: () => [grid(
         ["Esselunga", "Carrefour", "Lidl", "Conad"].map((brand) => card({
