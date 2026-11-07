@@ -840,3 +840,53 @@ a { color: inherit; }
 .rcard-info dd div { line-height: 1.5; }
 .rcard-days { color: var(--muted); font-weight: 500; }
 .rcard-closed { color: #d93025; font-weight: 600; }
+
+.rcard-badge.pk-street { background: #e7f6ee; color: #1a7f4b; }
+.rcard-badge.pk-garage { background: #e8f0fe; color: #1a56c4; }
+
+/* =====================================================
+   Card parcheggi orizzontali (foto accanto al testo)
+===================================================== */
+
+.pgrid {
+    grid-template-columns: 1fr;        /* una card per riga */
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.pcard {
+    flex-direction: row;               /* foto | testo */
+    align-items: stretch;
+}
+
+.pcard .rcard-media {
+    flex: 0 0 38%;
+    aspect-ratio: auto;
+    min-height: 240px;
+}
+
+.pcard .rcard-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.pcard .rcard-actions .btn {
+    flex: 0 1 auto;                    /* pulsanti non allungati a tutta riga */
+}
+
+/* Smartphone: foto sopra il testo */
+@media (max-width: 640px) {
+    .pcard {
+        flex-direction: column;
+    }
+
+    .pcard .rcard-media {
+        flex: none;
+        aspect-ratio: 16 / 10;
+        min-height: 0;
+    }
+
+    .pcard .rcard-actions .btn {
+        flex: 1;
+    }
+}

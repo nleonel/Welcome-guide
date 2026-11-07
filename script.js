@@ -789,6 +789,16 @@ const RC_TEXT = {
 };
 Object.keys(RC_TEXT).forEach((code) => { if (T[code]) T[code].rc = RC_TEXT[code]; });
 
+const PK_TEXT = {
+    it: { price: "Tariffa", hours: "Orari", go: "Indicazioni", type: { street: "In strada", garage: "Custodito" } },
+    en: { price: "Rate", hours: "Opening hours", go: "Directions", type: { street: "On street", garage: "Attended" } },
+    fr: { price: "Tarif", hours: "Horaires", go: "Itinéraire", type: { street: "Dans la rue", garage: "Surveillé" } },
+    de: { price: "Tarif", hours: "Öffnungszeiten", go: "Route", type: { street: "Straße", garage: "Bewacht" } },
+    es: { price: "Tarifa", hours: "Horario", go: "Cómo llegar", type: { street: "En la calle", garage: "Vigilado" } },
+    zh: { price: "收费", hours: "开放时间", go: "导航", type: { street: "路边", garage: "看管停车场" } }
+};
+Object.keys(PK_TEXT).forEach((code) => { if (T[code]) T[code].pk = PK_TEXT[code]; });
+
 /* ---------- Traduzioni widget meteo ---------- */
 const WX_TEXT = {
     it: { title: "Meteo a Torino", today: "Oggi", feels: "Percepita", hum: "Umidità", wind: "Vento",
@@ -1198,6 +1208,279 @@ function restaurantCard(r) {
     );
 }
 
+/* ---------- Card parcheggio ---------- */
+
+function parkingCard(p) {
+    const name = loc(p.name);
+
+    const media = h("div", { class: "rcard-media" });
+    const img = h("img", { src: p.photo, alt: name, loading: "lazy" });
+    img.addEventListener("error", () => {
+        img.remove();
+        media.classList.add("rcard-noimg");
+        media.textContent = p.type === "street" ? "🅿️" : "🏢";
+    });
+    media.append(img, h("span", { class: "rcard-badge pk-" + p.type }, tr("pk.type." + p.type)));
+
+    const hours = hoursLines(p);
+    const info = [];
+    if (p.price)       info.push(h("dt", null, "💶 " + tr("pk.price")), h("dd", null, loc(p.price)));
+    if (hours.length)  info.push(h("dt", null, "🕒 " + tr("pk.hours")), h("dd", null, hours));
+
+    /* Parcheggio in strada: apre la zona; custodito: percorso in auto */
+    const mapsUrl = p.type === "street"
+        ? mapsSearch(p.address)
+        : routeTo(name + ", " + p.address, "driving");
+
+        return h("article", { class: "card rcard pcard" },
+        media,
+        h("div", { class: "rcard-body" },
+            h("h3", null, name),
+            p.rating && h("div", { class: "rcard-rating" },
+                h("strong", null, p.rating.toFixed(1)),
+                h("span", { class: "rcard-stars", "aria-hidden": "true" }, starBar(p.rating)),
+                p.reviews && h("span", { class: "muted" }, "(" + p.reviews + " " + tr("rc.reviews") + ")")),
+            (p.walkMin || p.carMin) && h("div", { class: "rcard-travel" },
+                p.walkMin && h("span", null, "🚶 " + p.walkMin + " min " + tr("rc.walk")),
+                p.carMin && h("span", null, "🚗 " + p.carMin + " min " + tr("rc.car"))),
+            h("p", null, loc(p.desc)),
+            info.length && h("dl", { class: "rcard-info" }, info),
+            h("div", { class: "rcard-actions" },
+                p.phone && h("a", { class: "btn btn-outline", href: "tel:" + p.phone }, "📞 " + tr("rc.call")),
+                extLink(mapsUrl, "📍 " + tr("pk.go"))))
+    );
+}
+
+/* ---------- PARCHEGGI ---------- */
+/* name, price e desc possono essere stringhe oppure oggetti tradotti { it, en, ... } */
+
+const PARKINGS = [
+    {
+        type: "street",
+        name: {
+            it: "Parcheggio gratuito in strada",
+            en: "Free street parking",
+            fr: "Stationnement gratuit dans la rue",
+            de: "Kostenloses Parken an der Straße",
+            es: "Aparcamiento gratuito en la calle",
+            zh: "免费路边停车"
+        },
+        rating: null, reviews: null,
+        price: { it: "Gratuito", en: "Free", fr: "Gratuit", de: "Kostenlos", es: "Gratis", zh: "免费" },
+        hours: [{ d: "mon-sun", t: "24h" }],
+        address: "Via Crevacuore 45, 10146 Torino TO",
+        photo: "images/parking/street.jpg",
+        desc: {
+            it: "Posti gratuiti nelle vicinanze all'appartamento. Controllate sempre i cartelli per i divieti stradali.",
+            en: "Free parking spaces are available near the apartment. Always check the signs for any parking restrictions.",
+            fr: "Places gratuites à proximité de l'appartement. Vérifiez toujours les panneaux indiquant les interdictions de stationnement.",
+            de: "Kostenlose Parkplätze in der Nähe der Wohnung. Achten Sie stets auf die Beschilderung bezüglich Park- oder Halteverboten.",
+            es: "Hay aparcamiento gratuito cerca del apartamento. Consulte siempre las señales de restricciones de tráfico.",
+            zh: "公寓附近有免費停車位。請務必留意交通管制標誌。"
+        }
+    },
+
+    {
+        type: "street",
+        name: {
+            it: "Parcheggio Campanella",
+            en: "Campanella Car Park",
+            fr: "Parking Campanella",
+            de: "Parkplatz Campanella",
+            es: "Aparcamiento Campanella",
+            zh: "坎帕內拉停車場"
+        },
+        rating: 5.0, reviews: null,
+        price: { it: "Gratuito", en: "Free", fr: "Gratuit", de: "Kostenlos", es: "Gratis", zh: "免费" },
+        hours: [{ d: "mon-sun", t: "24h" }],
+        walkMin: 3, carMin: 1,
+        address: "Parcheggio Campanella, 10146 Torino TO",
+        photo: "images/parking/street.jpg",
+        desc: {
+            it: "Posti gratuiti nelle vicinanze all'appartamento. Controllate sempre i cartelli per i divieti stradali.",
+            en: "Free parking spaces are available near the apartment. Always check the signs for any parking restrictions.",
+            fr: "Places gratuites à proximité de l'appartement. Vérifiez toujours les panneaux indiquant les interdictions de stationnement.",
+            de: "Kostenlose Parkplätze in der Nähe der Wohnung. Achten Sie stets auf die Beschilderung bezüglich Park- oder Halteverboten.",
+            es: "Hay aparcamiento gratuito cerca del apartamento. Consulte siempre las señales de restricciones de tráfico.",
+            zh: "公寓附近有免費停車位。請務必留意交通管制標誌。"
+        }
+    },
+
+    {
+        type: "street",
+        name: {
+            it: "Parcheggio Supermercato",
+            en: "Supermarket Parking",
+            fr: "Parking de supermarché",
+            de: "Supermarkt-Parkplatz",
+            es: "Aparcamiento de supermercado",
+            zh: "超市停車場"
+        },
+        rating: 1.8, reviews: 4,
+        price: { it: "Gratuito", en: "Free", fr: "Gratuit", de: "Kostenlos", es: "Gratis", zh: "免费" },
+        hours: [{ d: "mon-sun", t: "24h" }],
+        walkMin: 4, carMin: 3,
+        address: "Parcheggio comercial, 10146 Torino TO",
+        photo: "images/parking/street.jpg",
+        desc: {
+            it: "Posti gratuiti nelle vicinanze all'appartamento. Controllate sempre i cartelli per i divieti stradali.",
+            en: "Free parking spaces are available near the apartment. Always check the signs for any parking restrictions.",
+            fr: "Places gratuites à proximité de l'appartement. Vérifiez toujours les panneaux indiquant les interdictions de stationnement.",
+            de: "Kostenlose Parkplätze in der Nähe der Wohnung. Achten Sie stets auf die Beschilderung bezüglich Park- oder Halteverboten.",
+            es: "Hay aparcamiento gratuito cerca del apartamento. Consulte siempre las señales de restricciones de tráfico.",
+            zh: "公寓附近有免費停車位。請務必留意交通管制標誌。"
+        }
+    },
+
+    {
+        type: "street",
+        name: {
+            it: "Parcheggio Supermercato",
+            en: "Supermarket Parking",
+            fr: "Parking de supermarché",
+            de: "Supermarkt-Parkplatz",
+            es: "Aparcamiento de supermercado",
+            zh: "超市停車場"
+        },
+        rating: 1.8, reviews: 4,
+        price: { it: "Gratuito", en: "Free", fr: "Gratuit", de: "Kostenlos", es: "Gratis", zh: "免费" },
+        hours: [{ d: "mon-sun", t: "24h" }],
+        walkMin: 3, carMin: 2,
+        address: "Via Crevacuore, 26/B, 10146 Torino TO",
+        photo: "images/parking/street.jpg",
+        desc: {
+            it: "Posti gratuiti nelle vicinanze all'appartamento. Controllate sempre i cartelli per i divieti stradali.",
+            en: "Free parking spaces are available near the apartment. Always check the signs for any parking restrictions.",
+            fr: "Places gratuites à proximité de l'appartement. Vérifiez toujours les panneaux indiquant les interdictions de stationnement.",
+            de: "Kostenlose Parkplätze in der Nähe der Wohnung. Achten Sie stets auf die Beschilderung bezüglich Park- oder Halteverboten.",
+            es: "Hay aparcamiento gratuito cerca del apartamento. Consulte siempre las señales de restricciones de tráfico.",
+            zh: "公寓附近有免費停車位。請務必留意交通管制標誌。"
+        }
+    },
+
+    {
+        type: "street",
+        name: {
+            it: "Parcheggio Bellardi",
+            en: "Bellardi Parking",
+            fr: "Parking Bellardi",
+            de: "Parkplatz Bellardi",
+            es: "Aparcamiento Bellardi",
+            zh: "貝拉爾迪停車場"
+        },
+        rating: 5, reviews: 1,
+        price: { it: "Gratuito", en: "Free", fr: "Gratuit", de: "Kostenlos", es: "Gratis", zh: "免费" },
+        hours: [{ d: "mon-sun", t: "24h" }],
+        walkMin: 10, carMin: 3,
+        address: "Via Ludovico Bellardi, 134, 10146 Torino TO",
+        photo: "images/parking/street.jpg",
+        desc: {
+            it: "Posti gratuiti nelle vicinanze all'appartamento. Controllate sempre i cartelli per i divieti stradali.",
+            en: "Free parking spaces are available near the apartment. Always check the signs for any parking restrictions.",
+            fr: "Places gratuites à proximité de l'appartement. Vérifiez toujours les panneaux indiquant les interdictions de stationnement.",
+            de: "Kostenlose Parkplätze in der Nähe der Wohnung. Achten Sie stets auf die Beschilderung bezüglich Park- oder Halteverboten.",
+            es: "Hay aparcamiento gratuito cerca del apartamento. Consulte siempre las señales de restricciones de tráfico.",
+            zh: "公寓附近有免費停車位。請務必留意交通管制標誌。"
+        }
+    },
+
+    {
+        type: "garage",
+        name: {
+            it: "Autorimessa Impero",
+            en: "Garage Impero",
+            fr: "Garage Impero",
+            de: "Garage Impero",
+            es: "Aparcamiento Impero",
+            zh: "Impero 停車場"
+        },
+        rating: 4.5, reviews: 19,
+        price: { it: "Pagamento", en: "Paid", fr: "Payant", de: "kostenpflichtig", es: "Por una tarifa", zh: "付費" },
+        hours: [{ d: "mon-sun", t: "24h" }],
+        phone: "+393393266899",
+        walkMin: 15, carMin: 4,
+        address: "Via Ludovico Bellardi, 17, 10146 Torino TO",
+        photo: "images/parking/street.jpg",
+        desc: {
+            it: "Grande garage coperto su due piani.",
+            en: "Large, covered, two-story parking.",
+            fr: "Grand garage couvert sur deux étages.",
+            de: "Große überdachte Parkplatz auf zwei Etagen.",
+            es: "Garaje grande, cubierto y de dos plantas.",
+            zh: "大型兩層有頂車庫。"
+        }
+    },
+    {
+        type: "garage",
+        name: {
+            it: "Parcheggio Venchi Unica",
+            en: "Venchi Unica Parking",
+            fr: "Venchi Unica Parking",
+            de: "Venchi Unica Parking",
+            es: "Aparcamiento Venchi Unica",
+            zh: "Venchi Unica 停車場"
+        },
+        rating: 3.8, reviews: 75,
+        price: { it: "Pagamento", en: "Paid", fr: "Payant", de: "kostenpflichtig", es: "Por una tarifa", zh: "付費" },
+        hours: [{ d: "mon-sun", t: "24h" }],
+        walkMin: 25, carMin: 8,
+        address: "C.so Francia, 323 A, 10142 Torino TO",
+        photo: "images/parking/street.jpg",
+        desc: {
+            it: "Parcheggio coperto. Ottimo per l'interscambio con la metropolitana.Acquistando un abbonamento alla rete urbana il parcheggio è gratuito.",
+            en: "Covered parking. Excellent for transferring to the metro. Parking is free if you purchase a pass for the urban transport network.",
+            fr: "Parking couvert. Idéal pour une correspondance avec le métro. Le stationnement est gratuit si vous achetez un abonnement au réseau urbain.",
+            de: "Überdachter Parkplatz. Hervorragend geeignet für den Umstieg auf die U-Bahn. Beim Kauf eines Abonnements für das städtische Verkehrsnetz ist das Parken kostenlos.",
+            es: "Aparcamiento cubierto. Ideal para hacer transbordo al metro. El aparcamiento es gratuito con el abono de autobús urbano.",
+            zh: "室內停車場。方便換乘地鐵。 持市公車卡可免費停車。"
+        }
+    },
+
+    {
+        type: "street",
+        name: {
+            it: "Parcheggio Servais",
+            en: "Servais Car Park",
+            fr: "Parking Servais",
+            de: "Parkplatz Servais",
+            es: "Aparcamiento Servais",
+            zh: "Servais 停車場"
+        },
+        rating: 4.5, reviews: 19,
+        price: { it: "Gratuito", en: "Free", fr: "Gratuit", de: "Kostenlos", es: "Gratis", zh: "免费" },
+        hours: [{ d: "mon-sun", t: "24h" }],
+        walkMin: 12, carMin: 6,
+        address: "Via Carlo Bianco, 11, 10146 Torino TO",
+        photo: "images/parking/street.jpg",
+        desc: {
+            it: "Posti gratuiti nelle vicinanze all'appartamento. Controllate sempre i cartelli per i divieti stradali.",
+            en: "Free parking spaces are available near the apartment. Always check the signs for any parking restrictions.",
+            fr: "Places gratuites à proximité de l'appartement. Vérifiez toujours les panneaux indiquant les interdictions de stationnement.",
+            de: "Kostenlose Parkplätze in der Nähe der Wohnung. Achten Sie stets auf die Beschilderung bezüglich Park- oder Halteverboten.",
+            es: "Hay aparcamiento gratuito cerca del apartamento. Consulte siempre las señales de restricciones de tráfico.",
+            zh: "公寓附近有免費停車位。請務必留意交通管制標誌。"
+        }
+    }
+
+    /* ===== SCHEMA PARCHEGGIO CUSTODITO: copia, togli i commenti e compila =====
+    ,{
+        type: "garage",
+        name: "NOME PARCHEGGIO",
+        rating: 4.5, reviews: 120,
+        price: { it: "2 €/ora · 15 €/giorno", en: "€2/hour · €15/day" },
+        hours: [{ d: "mon-sat", t: "07:00–22:00" }], closed: "sun",
+        phone: "+39011XXXXXXX",
+        walkMin: 8, carMin: 3,
+        address: "Via XXXXX 10, 10146 Torino TO",
+        photo: "images/parking/nome-parcheggio.jpg",
+        desc: {
+            it: "Parcheggio coperto e custodito.",
+            en: "Covered, attended car park."
+        }
+    }
+    ======================================================================== */
+];
+
 const RENDER = {
 
     home() {
@@ -1268,12 +1551,13 @@ const RENDER = {
         h("p", { class: "center" }, extLink(mapsSearch(CONFIG.address), "📍 " + tr("dir.address")))
     ],
 
-    parking: () => [grid([
-        card({ icon: "🅿️", title: tr("park.street.0"), text: tr("park.street.1"),
-               href: mapsSearch(CONFIG.address), label: tr("ui.maps") }),
-        card({ icon: "🏢", title: tr("park.private.0"), text: tr("park.private.1"),
-               href: nearHome("parcheggio custodito"), label: tr("ui.maps") })
-    ])],
+      parking: () => [
+        h("div", { class: "grid rgrid pgrid" },
+            PARKINGS
+                .slice()
+                .sort((a, b) => (a.walkMin ?? 0) - (b.walkMin ?? 0))
+                .map(parkingCard))
+    ],
 
     /*
     attractions: () => [grid([
