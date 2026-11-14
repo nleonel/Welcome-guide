@@ -1269,7 +1269,7 @@ const PARKINGS = [
         price: { it: "Gratuito", en: "Free", fr: "Gratuit", de: "Kostenlos", es: "Gratis", zh: "免费" },
         hours: [{ d: "mon-sun", t: "24h" }],
         address: "Via Crevacuore 45, 10146 Torino TO",
-        photo: "images/parking/street.jpg",
+        photo: "images/parking/crevacuore.jpg",
         desc: {
             it: "Posti gratuiti nelle vicinanze all'appartamento. Controllate sempre i cartelli per i divieti stradali.",
             en: "Free parking spaces are available near the apartment. Always check the signs for any parking restrictions.",
@@ -1295,7 +1295,7 @@ const PARKINGS = [
         hours: [{ d: "mon-sun", t: "24h" }],
         walkMin: 3, carMin: 1,
         address: "Parcheggio Campanella, 10146 Torino TO",
-        photo: "images/parking/street.jpg",
+        photo: "images/parking/park.jpg",
         desc: {
             it: "Posti gratuiti nelle vicinanze all'appartamento. Controllate sempre i cartelli per i divieti stradali.",
             en: "Free parking spaces are available near the apartment. Always check the signs for any parking restrictions.",
@@ -1321,7 +1321,7 @@ const PARKINGS = [
         hours: [{ d: "mon-sun", t: "24h" }],
         walkMin: 4, carMin: 3,
         address: "Parcheggio comercial, 10146 Torino TO",
-        photo: "images/parking/street.jpg",
+        photo: "images/parking/park.jpg",
         desc: {
             it: "Posti gratuiti nelle vicinanze all'appartamento. Controllate sempre i cartelli per i divieti stradali.",
             en: "Free parking spaces are available near the apartment. Always check the signs for any parking restrictions.",
@@ -1347,7 +1347,7 @@ const PARKINGS = [
         hours: [{ d: "mon-sun", t: "24h" }],
         walkMin: 3, carMin: 2,
         address: "Via Crevacuore, 26/B, 10146 Torino TO",
-        photo: "images/parking/street.jpg",
+        photo: "images/parking/park.jpg",
         desc: {
             it: "Posti gratuiti nelle vicinanze all'appartamento. Controllate sempre i cartelli per i divieti stradali.",
             en: "Free parking spaces are available near the apartment. Always check the signs for any parking restrictions.",
@@ -1373,7 +1373,7 @@ const PARKINGS = [
         hours: [{ d: "mon-sun", t: "24h" }],
         walkMin: 10, carMin: 3,
         address: "Via Ludovico Bellardi, 134, 10146 Torino TO",
-        photo: "images/parking/street.jpg",
+        photo: "images/parking/park.jpg",
         desc: {
             it: "Posti gratuiti nelle vicinanze all'appartamento. Controllate sempre i cartelli per i divieti stradali.",
             en: "Free parking spaces are available near the apartment. Always check the signs for any parking restrictions.",
@@ -1400,7 +1400,7 @@ const PARKINGS = [
         phone: "+393393266899",
         walkMin: 15, carMin: 4,
         address: "Via Ludovico Bellardi, 17, 10146 Torino TO",
-        photo: "images/parking/street.jpg",
+        photo: "images/parking/parking.jpg",
         desc: {
             it: "Grande garage coperto su due piani.",
             en: "Large, covered, two-story parking.",
@@ -1425,7 +1425,7 @@ const PARKINGS = [
         hours: [{ d: "mon-sun", t: "24h" }],
         walkMin: 25, carMin: 8,
         address: "C.so Francia, 323 A, 10142 Torino TO",
-        photo: "images/parking/street.jpg",
+        photo: "images/parking/parking.jpg",
         desc: {
             it: "Parcheggio coperto. Ottimo per l'interscambio con la metropolitana.Acquistando un abbonamento alla rete urbana il parcheggio è gratuito.",
             en: "Covered parking. Excellent for transferring to the metro. Parking is free if you purchase a pass for the urban transport network.",
@@ -1451,7 +1451,7 @@ const PARKINGS = [
         hours: [{ d: "mon-sun", t: "24h" }],
         walkMin: 12, carMin: 6,
         address: "Via Carlo Bianco, 11, 10146 Torino TO",
-        photo: "images/parking/street.jpg",
+        photo: "images/parking/park.jpg",
         desc: {
             it: "Posti gratuiti nelle vicinanze all'appartamento. Controllate sempre i cartelli per i divieti stradali.",
             en: "Free parking spaces are available near the apartment. Always check the signs for any parking restrictions.",
@@ -1598,7 +1598,7 @@ const RENDER = {
 
 
     supermarkets: () => [grid(
-        ["Esselunga", "Carrefour", "Lidl", "Conad"].map((brand) => card({
+        ["Lidl", "Carrefour", "Mercato", "In's","Unes","Pam","Conad"].map((brand) => card({
             icon: "🛒", title: brand, text: tr("shop"),
             href: nearHome("supermercato " + brand), label: tr("ui.maps") })))],
 
